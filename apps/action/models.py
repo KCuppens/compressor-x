@@ -11,7 +11,7 @@ class Action(BaseModel):
     # The storage of files in session
     compressions = models.ManyToManyField(Compression, blank=True)
 
-    config_file = models.ForeignKey(ConfigFile, on_delete=models.CASCADE)
+    config_file = models.ForeignKey(ConfigFile, on_delete=models.CASCADE, null=True, blank=True)
 
     objects = ActionManager()
 
