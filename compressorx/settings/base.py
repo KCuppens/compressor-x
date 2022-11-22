@@ -112,8 +112,10 @@ THIRD_PARTY_APPS = [
     "boto3",
 ]
 LOCAL_APPS = [
+    "apps.action",
     "apps.base",
     "apps.blog",
+    "apps.compression",
     "apps.config",
     "apps.contact",
     "apps.cookies",

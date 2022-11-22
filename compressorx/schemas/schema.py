@@ -1,5 +1,6 @@
 from graphene import ObjectType, Schema
 
+from apps.action.schemas.schema import Mutation as ActionMutation
 from apps.blog.schemas.schema import Query as BlogQuery
 from apps.contact.schemas.schema import Mutation as ContactMutation
 from apps.cookies.schemas.schema import Query as CookieQuery
@@ -16,7 +17,7 @@ class Query(
     pass
 
 
-class Mutation(ContactMutation, UserMutation, ObjectType):
+class Mutation(ActionMutation, ContactMutation, UserMutation, ObjectType):
     pass
 
 

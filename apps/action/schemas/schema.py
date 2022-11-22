@@ -7,7 +7,7 @@ from apps.action.models import Action
 class ActionType(DjangoObjectType):
     class Meta:
         model = Action
-        fields = '__all__'
+        fields = "__all__"
 
 
 class CreateOrGetAction(graphene.Mutation):
@@ -18,9 +18,7 @@ class CreateOrGetAction(graphene.Mutation):
         request = info.context
         action_obj = Action.objects.new_or_get(request)
         verification_message = f"Successfully created action, {action_obj.id}"
-        return CreateOrGetAction(
-            action=action_obj, verification_message=verification_message
-        )
+        return CreateOrGetAction(action=action_obj, verification_message=verification_message)
 
 
 class Mutation(graphene.ObjectType):
