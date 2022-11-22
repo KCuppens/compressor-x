@@ -1,15 +1,17 @@
 from django.db import models
 
 from apps.action.managers import ActionManager
-from apps.base.models import Base
-from apps.compress.models import Compress
-from apps.config_file.models import ConfigFile
+from apps.base.models import BaseModel
+from apps.compression.models import Compression
 
 
-class Action(Base):
+# from apps.config_file.models import ConfigFile
+
+
+class Action(BaseModel):
     pass
     # The storage of files in session
-    # compresses = models.ForeignKey(Compress, on_delete=models.CASCADE)
+    compressions = models.ManyToManyField(Compression, blank=True, null=True)
 
     # config_file = models.ForeignKey(ConfigFile, on_delete=models.CASCADE)
 
@@ -22,7 +24,8 @@ class Action(Base):
         """
         Create a new config file and assign it to the action
         """
-        self.config_file = ConfigFile.objects.create()
+        pass
+        # self.config_file = ConfigFile.objects.create()
 
     def save(self, *args, **kwargs):
         self.assign_config_file()
