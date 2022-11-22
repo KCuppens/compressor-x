@@ -3,7 +3,8 @@ from datetime import datetime, timedelta
 from app.celery import app
 
 from apps.action.models import Action
-import os
+
+
 now = datetime.now()
 
 

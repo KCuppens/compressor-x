@@ -153,9 +153,7 @@ class AdminModelOverrideMiddleware(MiddlewareMixin):
                     return app_list
 
     def get_model_dict(self, model):
-        splitted_model = model.split(".")
         model = apps.get_model(model)
-        app_name = splitted_model[0]
         model_lowercase = model._meta.object_name.lower()
         return {
             "model": model,
