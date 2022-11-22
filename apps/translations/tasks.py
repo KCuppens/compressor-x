@@ -13,7 +13,7 @@ from celery_once import QueueOnce
 
 from apps.translations.deepl import Deepl
 from apps.translations.models import Translation
-from {app_name}.celery import app
+from compressorx.celery import app
 
 
 logger = logging.getLogger(__name__)

@@ -35,7 +35,7 @@ CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 
 CELERY_ONCE = {
-    "backend": "{app_name}.celery.CeleryOnceFakeBackend",
+    "backend": "compressorx.celery.CeleryOnceFakeBackend",
     "settings": {
         "default_timeout": 1,
     },

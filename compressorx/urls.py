@@ -19,9 +19,9 @@ urlpatterns = [
 ]
 
 
-admin.site.site_header = "{app_name}"
-admin.site.site_title = "{app_name} Admin Portal"
-admin.site.index_title = "{app_name} Admin"
+admin.site.site_header = "compressorx"
+admin.site.site_title = "compressorx Admin Portal"
+admin.site.index_title = "compressorx Admin"
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

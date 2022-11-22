@@ -24,7 +24,7 @@ Use [flake8](https://pypi.org/project/flake8/) to check for problems in this are
 
 ### Imports
 Use [isort](https://github.com/PyCQA/isort#readme) to automate import sorting. The guidelines are included in the `setup.cfg` file:
-- Put imports in these groups: future, standard library, django components, third-party libraries, other *{app_name}* components, local components, try/excepts. Place all `import module statements` before `from module import objects` in each section. Use absolute imports for other *{app_name}* components and relative imports for local components.
+- Put imports in these groups: future, standard library, django components, third-party libraries, other *compressorx* components, local components, try/excepts. Place all `import module statements` before `from module import objects` in each section. Use absolute imports for other *compressorx* components and relative imports for local components.
 - On each line, alphabetize the items with the upper case items grouped before the lowercase items.
 - Break long lines using parentheses and indent continuation lines by 4 spaces. Include a trailing comma after the last import and put the closing parenthesis on its own line.
 - Use a single blank line between the last import and any module level code, and use two blank lines above the first function or class.
@@ -46,7 +46,7 @@ from django.http import HttpRequest
 # third-party
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-# {app_name} components
+# compressorx components
 from billing.api.v1.permissions import SubscriptionPermissions
 from billing.tasks import sync_employees_subscription
 

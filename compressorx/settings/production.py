@@ -39,7 +39,7 @@ SECURE_SSL_REDIRECT = env.bool("SECURE_REDIRECT", default=False)
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
 DEFAULT_FROM_EMAIL = env(
     "DJANGO_DEFAULT_FROM_EMAIL",
-    default="{app_name} <support@{app_name}.be>",
+    default="compressorx <support@compressorx.be>",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)

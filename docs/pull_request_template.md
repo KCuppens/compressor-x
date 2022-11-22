@@ -12,8 +12,8 @@ Check all checkbox before send your code in review
 - [ ] 🤓 **Reread** your changes with [Gitk](https://www.atlassian.com/git/tutorials/gitk) or other tool to see all changes line by line
 - [ ] 🧼 **Clean up** your code:
   - Keep your code easy to understand ex: (smaller functions, explicit variables and functions names, etc)
-  - Respect the [Code Style Guide](https://github.com/{app_name}/{app_name}-backend/blob/1fd7800e1a7044080d11243a671f91a6d99c528e/docs/codestyle.md)
-  - Use a linter (flake8, isort, etc) or [pre-commit configuration](https://github.com/{app_name}/{app_name}-backend/blob/7f309a22b3283e0ce5ea96418e659af795864864/.pre-commit-config-ci.yaml)
+  - Respect the [Code Style Guide](https://github.com/compressorx/compressorx-backend/blob/1fd7800e1a7044080d11243a671f91a6d99c528e/docs/codestyle.md)
+  - Use a linter (flake8, isort, etc) or [pre-commit configuration](https://github.com/compressorx/compressorx-backend/blob/7f309a22b3283e0ce5ea96418e659af795864864/.pre-commit-config-ci.yaml)
 - [ ] 🗑 **Remove unused code**: commented code, `print()` used for test or debugging
 - [ ] 📑 **Update the documentation**, if needed:
   - `README.md`
