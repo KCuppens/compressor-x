@@ -4,7 +4,7 @@ from django.conf import settings
 
 from git import InvalidGitRepositoryError, Repo
 
-from {app_name} import __version__
+from compressorx import __version__
 
 from ..utils import get_environment_color
 

@@ -49,7 +49,7 @@ git checkout -b hotfix/RXSG-1244-vat-rates
 ```
 2. fix the issue
 3. add a test for the fix
-4. update version number (in `{app_name}/__init__.py`)
+4. update version number (in `compressorx/__init__.py`)
 5. update the `CHANGELOG`, add new release
 6. Make the pull request (check that it os a PR to main rather tha develop)
 7. Make sure someone else reviews the code, never trust yourself on production hotfixes, you are blinded by the urgent character of the issue.

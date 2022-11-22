@@ -162,8 +162,8 @@ class AdminModelOverrideMiddleware(MiddlewareMixin):
             "name": model.__name__,
             "object_name": model._meta.object_name,
             "perms": {"add": True, "change": True, "delete": True, "view": True},
-            "admin_url": f"/admin/{app_name}/{model_lowercase}/",
-            "add_url": f"/admin/{app_name}/{model_lowercase}/add/",
+            "admin_url": f"/admin/compressorx/{model_lowercase}/",
+            "add_url": f"/admin/compressorx/{model_lowercase}/add/",
             "view_only": False,
         }
 

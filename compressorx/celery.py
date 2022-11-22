@@ -9,8 +9,8 @@ from kombu.entity import Exchange, Queue
 
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "{app_name}.settings.production")
-app = Celery("{app_name}")  # , broker=settings.CELERY_BROKER_URL)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "compressorx.settings.production")
+app = Celery("compressorx")  # , broker=settings.CELERY_BROKER_URL)
 app.conf.ONCE = settings.CELERY_ONCE  # force CELERY_ONCE to load settings
 
 # Using a string here means the worker doesn't have to serialize

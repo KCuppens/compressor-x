@@ -51,9 +51,9 @@ Some values might need to be filled up get access to some services.
 
 # 5. GraphQL
 
-The docs can be found <a href="https://{app_name}.be/graphql">Here</a>
+The docs can be found <a href="https://compressorx.be/graphql">Here</a>
 
 # 6. Links
-* <a href="https://www.{app_name}.be/" target="_blank">Website</a>
+* <a href="https://www.compressorx.be/" target="_blank">Website</a>
 
 

@@ -18,14 +18,14 @@ def print_title(title):
 
 def stop_service():
     print_title("Stop webapp with supervisor")
-    subprocess.run("supervisorctl stop {app_name}", shell=True)
+    subprocess.run("supervisorctl stop compressorx", shell=True)
     print_title("Stop celery with supervisor")
     subprocess.run("supervisorctl stop celery", shell=True)
 
 
 def start_service():
     print_title("Start webapp with supervisor")
-    subprocess.run("supervisorctl start {app_name}", shell=True)
+    subprocess.run("supervisorctl start compressorx", shell=True)
     print_title("Start celery with supervisor")
     subprocess.run("supervisorctl start celery", shell=True)
 
@@ -76,7 +76,7 @@ def install_requirements():
 def migrate_db():
     print_title("Do database migrations")
     subprocess.run(
-        "../venv/bin/python manage.py migrate --settings={app_name}.settings.production",
+        "../venv/bin/python manage.py migrate --settings=compressorx.settings.production",
         shell=True,
     )
 
@@ -85,7 +85,7 @@ def collect_static():
     print_title("Collect static files")
     subprocess.run(
         "../venv/bin/python manage.py collectstatic "
-        "--noinput --settings={app_name}.settings.production",
+        "--noinput --settings=compressorx.settings.production",
         shell=True,
     )
 

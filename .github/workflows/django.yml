@@ -46,7 +46,7 @@ jobs:
         python -m pip install -r requirements/local.txt  
     - name: Migrate DB
       run: |
-        python manage.py migrate --settings={app_name}.settings.local
+        python manage.py migrate --settings=compressorx.settings.local
     - name: Run code quality checks
       run: |
         pre-commit run --all flake8
