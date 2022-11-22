@@ -115,6 +115,7 @@ LOCAL_APPS = [
     "apps.action",
     "apps.base",
     "apps.blog",
+    "apps.compressed_file",
     "apps.compression",
     "apps.config",
     "apps.config_file",
