@@ -119,6 +119,7 @@ LOCAL_APPS = [
     "apps.config",
     "apps.contact",
     "apps.cookies",
+    "apps.initial_files",
     "apps.mail",
     "apps.translations",
     "apps.users",
@@ -193,7 +194,7 @@ STATICFILES_STORAGE = "apps.base.storage_backends.StaticStorage"
 # s3 public media settings
 PUBLIC_MEDIA_LOCATION = "media"
 MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/"
-DEFAULT_FILE_STORAGE = "apps.base.storage_backends.PublicMediaStorage"
+DEFAULT_FILE_STORAGE = "apps.base.storage_backends.MediaStorage"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [str(APPS_DIR / "static")]
 STATICFILES_FINDERS = [

@@ -11,7 +11,7 @@ from apps.compression.models import Compression
 class Action(BaseModel):
     pass
     # The storage of files in session
-    compressions = models.ManyToManyField(Compression, blank=True, null=True)
+    compressions = models.ManyToManyField(Compression, blank=True)
 
     # config_file = models.ForeignKey(ConfigFile, on_delete=models.CASCADE)
 
