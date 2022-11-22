@@ -3,9 +3,7 @@ from django.db import models
 from apps.action.managers import ActionManager
 from apps.base.models import BaseModel
 from apps.compression.models import Compression
-
-
-# from apps.config_file.models import ConfigFile
+from apps.config_file.models import ConfigFile
 
 
 class Action(BaseModel):
@@ -13,7 +11,7 @@ class Action(BaseModel):
     # The storage of files in session
     compressions = models.ManyToManyField(Compression, blank=True)
 
-    # config_file = models.ForeignKey(ConfigFile, on_delete=models.CASCADE)
+    config_file = models.ForeignKey(ConfigFile, on_delete=models.CASCADE)
 
     objects = ActionManager()
 
