@@ -14,7 +14,6 @@ class ActionTestCase(CustomGraphQLTestCase):
             }
             """,
         )
-        print(response.json())
         assert response.json()["data"]["createOrGetAction"]["action"]["id"]
 
     def test_duplicate_create_or_get_action(self):
@@ -29,7 +28,6 @@ class ActionTestCase(CustomGraphQLTestCase):
             }
             """,
         )
-        print(response.json())
         assert response.json()["data"]["createOrGetAction"]["action"]["id"]
         id = response.json()["data"]["createOrGetAction"]["action"]["id"]
         response = self.query(
@@ -43,5 +41,4 @@ class ActionTestCase(CustomGraphQLTestCase):
             }
             """,
         )
-        print(response.json())
         assert response.json()["data"]["createOrGetAction"]["action"]["id"] == id

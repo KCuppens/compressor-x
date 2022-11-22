@@ -5,6 +5,7 @@ from django.utils.html import mark_safe
 from graphene_django.utils.testing import GraphQLTestCase
 
 import apps.base.constants as C
+from apps.base.storage_backends import MediaStorage
 
 
 def get_environment_color(branch_name):
@@ -78,3 +79,12 @@ class CustomGraphQLTestCase(GraphQLTestCase):
     """
 
     GRAPHQL_URL = "/graphql/"
+
+
+def upload_file_to_media(path, file):
+    media_storage = MediaStorage()
+    if not media_storage.exists(path):  # avoid overwriting existing file
+        media_storage.save(path, file)
+        return True
+    else:
+        return False
