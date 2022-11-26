@@ -5,5 +5,5 @@ from apps.base.models import BaseModel
 
 
 class CompressedFile(BaseModel):
-    file = models.FileField()
+    file = models.FileField(max_length=255)
     status = models.CharField(max_length=255, choices=C.STATUSES_FILE, default=C.STATUS_OPEN)
