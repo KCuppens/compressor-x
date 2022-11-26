@@ -140,3 +140,5 @@ secrets
 .vscode/sftp.json
 staticfiles/
 
+
+.vscode/settings.json

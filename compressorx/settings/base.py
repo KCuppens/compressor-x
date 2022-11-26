@@ -187,7 +187,7 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
 AWS_DEFAULT_ACL = "public-read"
-AWS_S3_CUSTOM_DOMAIN = "d1doxw3qrus6l1.cloudfront.net"
+AWS_S3_CUSTOM_DOMAIN = "dqs5vrzwaxk68.cloudfront.net"
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 # s3 static settings
 STATIC_LOCATION = "static"
@@ -306,7 +306,26 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-soft-time-limit
 # TODO: set to whatever value is adequate in your circumstances
 CELERY_TASK_SOFT_TIME_LIMIT = 60
+# CELERY
+CACHE_MIDDLEWARE_ALIAS = "default"  # which cache alias to use
+CACHE_MIDDLEWARE_KEY_PREFIX = ""
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "KEY_PREFIX": "compressor_x_",
+    }
+}
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(os.environ.get("CHANNELS_URLS", "redis://localhost:6379/0"))],
+        },
+    },
+}
 
 CELERY_DEFAULT_QUEUE = "default"
 CELERY_DEFAULT_EXCHANGE = "normal"
@@ -376,3 +395,6 @@ ADMIN_MODEL_OVERRIDE = [
 
 # Deepl
 DEEPL_API_KEY = env.str("DEEPL_API_KEY", default="")
+
+
+ASGI_APPLICATION = "app.asgi.application"

@@ -2,10 +2,28 @@ from itertools import chain
 
 from django.utils.html import mark_safe
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from graphene_django.utils.testing import GraphQLTestCase
 
 import apps.base.constants as C
 from apps.base.storage_backends import MediaStorage
+
+
+def send_progress_websocket(action_obj, percentage, message, params={}):  # noqa: B006
+    """
+    Send a message to the websocket
+    """
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "compress_" + str(action_obj.id),
+        {
+            "compress_id": action_obj.id,
+            "progress": percentage,
+            "status": message,
+            "params": params,
+        },
+    )
 
 
 def get_environment_color(branch_name):

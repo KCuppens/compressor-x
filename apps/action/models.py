@@ -22,8 +22,7 @@ class Action(BaseModel):
         """
         Create a new config file and assign it to the action
         """
-        pass
-        # self.config_file = ConfigFile.objects.create()
+        self.config_file = ConfigFile.objects.create()
 
     def save(self, *args, **kwargs):
         self.assign_config_file()
