@@ -110,6 +110,7 @@ THIRD_PARTY_APPS = [
     "mptt",
     "storages",
     "boto3",
+    "django_celery_beat",
 ]
 LOCAL_APPS = [
     "apps.action",

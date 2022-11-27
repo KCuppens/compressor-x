@@ -28,3 +28,4 @@ django-storages==1.11.1
 boto3==1.26.13
 deepl==1.11.0
 celery_once==3.0.1
+django-celery-beat==2.4.0
