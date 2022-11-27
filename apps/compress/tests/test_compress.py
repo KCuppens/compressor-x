@@ -1,4 +1,5 @@
 from apps.action.tests.factories import ActionFactory
+from apps.base.storage_backends import MediaStorage
 from apps.base.utils import CustomGraphQLTestCase
 from apps.compress.services.CompressEngine import (
     CompressEngine,
@@ -22,6 +23,7 @@ class CompressEngineTestCase(CustomGraphQLTestCase):
             initial_file=self.initial_file,
         )
         self.action.compressions.add(self.compression)
+        self.media_storage = MediaStorage()
 
     def test_compress(self):
         self.assertEqual(

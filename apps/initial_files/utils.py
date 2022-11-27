@@ -18,6 +18,8 @@ def uploading_initial_file(file, action_obj):
     upload_file_to_media(path, file)
     # Creating InitialFile
     initial_file = InitialFile.objects.create(file=path)
+    compression_obj.initial_file = initial_file
+    compression_obj.save(update_fields=["initial_file"])
     # Assign Convert to Action
     action_obj.compressions.add(compression_obj)
     return initial_file

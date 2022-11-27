@@ -52,6 +52,7 @@ class AutoCompressTestCase(CustomGraphQLTestCase):
         self.assertTrue(image)
         self.assertTrue(img.verify)
         os.remove(get_compressed_file_path(initial_file_obj))
+        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
 
 
 class CustomCompressTestCase(CustomGraphQLTestCase):
@@ -124,6 +125,7 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertTrue(resize_fit)
         if os.path.exists("test_file.png"):
             os.remove("test_file.png")
+        self.assertFalse(os.path.exists("test_file.png"))
 
     def test_resize_image_percentage(self):
         # Arrange
@@ -147,6 +149,7 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertEqual(int(old_img.size[1] / 2), int(img.size[1]))
         if os.path.exists(get_compressed_file_path(initial_file_obj)):
             os.remove(get_compressed_file_path(initial_file_obj))
+        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
 
     def test_resize_image_pixel(self):
         # Arrange
@@ -171,6 +174,7 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertEqual(img.size[1], 500)
         if os.path.exists(get_compressed_file_path(initial_file_obj)):
             os.remove(get_compressed_file_path(initial_file_obj))
+        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
 
     def test_resize_image_pixel_auto_width(self):
         # Arrange
@@ -195,6 +199,7 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertNotEqual(img.size[0], 500)
         if os.path.exists(get_compressed_file_path(initial_file_obj)):
             os.remove(get_compressed_file_path(initial_file_obj))
+        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
 
     def test_resize_image_pixel_auto_height(self):
         # Arrange
@@ -219,6 +224,7 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertNotEqual(img.size[1], 500)
         if os.path.exists(get_compressed_file_path(initial_file_obj)):
             os.remove(get_compressed_file_path(initial_file_obj))
+        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
 
     def test_get_convert_type_jpeg(self):
         # Arrange
@@ -234,6 +240,7 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertEqual(file_type, "jpeg")
         if os.path.exists(get_compressed_file_path(initial_file_obj)):
             os.remove(get_compressed_file_path(initial_file_obj))
+        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
 
     def test_get_convert_type_default(self):
         # Arrange
@@ -249,6 +256,7 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertEqual(file_type, img.format)
         if os.path.exists(get_compressed_file_path(initial_file_obj)):
             os.remove(get_compressed_file_path(initial_file_obj))
+        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
 
     def test_get_prefix(self):
         # Arrange
@@ -285,6 +293,7 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertTrue(old_img)
         if os.path.exists(get_compressed_file_path(initial_file_obj)):
             os.remove(get_compressed_file_path(initial_file_obj))
+        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
 
     def test_save_image(self):
         # Arrange
@@ -318,6 +327,7 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
                 f"{prefix}{filename}{suffix}.{filetype}"
             )
             os.removedirs(f"{self.action.id}/{compression.id}/compressed_files/")
+        self.assertFalse(os.path.exists(f"{self.action.id}/{compression.id}/compressed_files/"))
 
     def test_full_optimized_web_package(self):
         prefix = "test_prefix"
@@ -355,6 +365,7 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
             self.assertTrue(os.path.exists(image))
             os.remove(image)
         os.removedirs(f"{self.action.id}/{compression.id}/compressed_files/")
+        self.assertFalse(os.path.exists(f"{self.action.id}/{compression.id}/compressed_files/"))
 
     def test_zip_package(self):
         initial_file_obj = InitialFile.objects.create(
@@ -374,6 +385,8 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertEqual(zip_path.split(".")[-1], "zip")
         os.remove(zip_path)
         os.remove("test_file.png")
+        self.assertFalse(os.path.exists(zip_path))
+        self.assertFalse(os.path.exists("test_file.png"))
 
     def test__device_package(self):
         prefix = "test_prefix"
@@ -410,3 +423,5 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertTrue(os.path.exists(images_zip[0]))
         os.remove(images_zip[0])
         os.removedirs(f"{self.action.id}/{compression.id}/compressed_files/")
+        self.assertFalse(os.path.exists(f"{self.action.id}/{compression.id}/compressed_files/"))
+        self.assertFalse(os.path.exists(images_zip[0]))
