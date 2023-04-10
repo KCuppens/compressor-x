@@ -4,7 +4,8 @@ import os
 from mailjet_rest import Client
 
 from apps.config.models import Config
-from apps.mail.models import EmailTemplate
+
+from .models import EmailTemplate
 
 
 logger = logging.getLogger(__name__)
@@ -37,8 +38,7 @@ def send_email(key_name, to_name, to_email, params={}):  # noqa: B006
         mailjet.send.create(data=data)
         logger.info(f"Send email with: {data}")
         return "Email has been sent."
-    else:
-        return "Email requires api keys."
+    return "Email requires api keys."
 
 
 def fill_in_merge_tags(params, template):

@@ -172,7 +172,7 @@ def _get_purview(entity, hierarchy):
                 )
 
             if hierarchy:
-                for (relation, detail) in hierarchy.items():
+                for relation, detail in hierarchy.items():
                     value = getattr(obj, relation, None)
 
                     if value is not None:

@@ -1,5 +1,6 @@
 # Production settings. To be used for every production deployment (staging, dev, prod).
 import logging
+from typing import List
 
 import sentry_sdk
 from sentry_sdk.integrations.celery import CeleryIntegration
@@ -62,8 +63,8 @@ CORS_ORIGIN_WHITELIST = env.list(
 )
 
 # adding regexp CORS incl. legacy support
-CORS_ORIGIN_REGEX_WHITELIST = []
-CORS_ALLOWED_ORIGIN_REGEXES = []
+CORS_ORIGIN_REGEX_WHITELIST: List[str] = []
+CORS_ALLOWED_ORIGIN_REGEXES: List[str] = []
 
 CELERY_BROKER_URL = env("REDIS", default="redis://localhost:6379")
 CELERY_ONCE = {
@@ -79,7 +80,7 @@ CELERY_ONCE = {
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
-    "formatters": {"verbose": {"format": "%(levelname)s %(module)s :" "%(message)s"}},
+    "formatters": {"verbose": {"format": "%(levelname)s %(module)s : %(message)s"}},
     "handlers": {
         "console": {
             "level": "DEBUG",

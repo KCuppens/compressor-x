@@ -5,8 +5,9 @@ from zipfile import ZipFile
 from PIL import ExifTags, Image
 
 import apps.config_file.constants as C
-from apps.compress.utils import get_filename
 from apps.config_file.constants import CONVERT_TYPE_JPEG
+
+from ..utils import get_filename
 
 
 logger = logging.getLogger(__name__)
@@ -50,41 +51,34 @@ class CustomCompress:
             resize_percentage = config_file.resize_percentage
             wsize = int(float(img.size[0]) * float(resize_percentage / 100))
             hsize = int(float(img.size[1]) * float(resize_percentage / 100))
-            img = fit_method((wsize, hsize), compression_filter)
-        elif config_file.resize_type == C.RESIZE_TYPE_PIXELS:
-            if height and width == 0:
-                hpercent = height / float(img.size[1])
-                wsize = int(float(img.size[0]) * float(hpercent))
-                img = fit_method((wsize, height), compression_filter)
-            elif width and height == 0:
-                wpercent = width / float(img.size[0])
-                hsize = int(float(img.size[1]) * float(wpercent))
-                img = fit_method((width, hsize), compression_filter)
-            elif width and height:
-                img = fit_method((width, height), compression_filter)
-        return img
+            return fit_method((wsize, hsize), compression_filter)
+        if height and width == 0:
+            hpercent = height / float(img.size[1])
+            wsize = int(float(img.size[0]) * float(hpercent))
+            return fit_method((wsize, height), compression_filter)
+        if width and height == 0:
+            wpercent = width / float(img.size[0])
+            hsize = int(float(img.size[1]) * float(wpercent))
+            return fit_method((width, hsize), compression_filter)
+        return fit_method((width, height), compression_filter)
 
     def get_convert_type(self, config_file, img):
         # Any extra options
         if not config_file.convert_type == C.CONVERT_TYPE_DEFAULT:
-            filetype = config_file.convert_type
-        else:
-            filetype = img.format
-        return filetype
+            return config_file.convert_type
+        return img.format
 
     def get_prefix(self, config_file):
         prefix = config_file.rename_prefix
         if prefix:
             return prefix + "_"
-        else:
-            return ""
+        return ""
 
     def get_suffix(self, config_file):
         suffix = config_file.rename_suffix
         if suffix:
             return "_" + suffix
-        else:
-            return ""
+        return ""
 
     def fix_orientation(self, config_file, img):
         if config_file.fix_orientation:

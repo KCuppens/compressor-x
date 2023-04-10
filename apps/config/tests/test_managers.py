@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from apps.config.models import Config
-from apps.config.tests.factories import ConfigFactory
+from ..models import Config
+from .factories import ConfigFactory
 
 
 class ConfigManagerTestCase(TestCase):

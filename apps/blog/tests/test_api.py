@@ -1,8 +1,9 @@
 import pytest
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
-from apps.blog.tests.factories import BlogFactory
 from apps.users.tests.factories import UserFactory
+
+from .factories import BlogFactory
 
 
 class BlogTestCase(JSONWebTokenTestCase):

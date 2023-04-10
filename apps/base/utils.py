@@ -1,13 +1,13 @@
 from itertools import chain
 
-from django.utils.html import mark_safe
+from django.utils.safestring import mark_safe
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from graphene_django.utils.testing import GraphQLTestCase
 
-import apps.base.constants as C
-from apps.base.storage_backends import MediaStorage
+from .constants import ENVIRONMENT_COLORS
+from .storage_backends import MediaStorage
 
 
 def send_progress_websocket(action_obj, percentage, message, params={}):  # noqa: B006
@@ -27,9 +27,9 @@ def send_progress_websocket(action_obj, percentage, message, params={}):  # noqa
 
 
 def get_environment_color(branch_name):
-    if branch_name in C.ENVIRONMENT_COLORS:
-        return C.ENVIRONMENT_COLORS[branch_name]
-    return C.ENVIRONMENT_COLORS["other"]
+    if branch_name in ENVIRONMENT_COLORS:
+        return ENVIRONMENT_COLORS[branch_name]
+    return ENVIRONMENT_COLORS["other"]
 
 
 def image_view(obj, height, width):
@@ -104,5 +104,4 @@ def upload_file_to_media(path, file):
     if not media_storage.exists(path):  # avoid overwriting existing file
         media_storage.save(path, file)
         return True
-    else:
-        return False
+    return False

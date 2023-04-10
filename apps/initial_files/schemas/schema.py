@@ -5,8 +5,9 @@ from graphene_file_upload.scalars import Upload
 from apps.action.models import Action
 from apps.action.schemas.schema import ActionType
 from apps.compress.services.CompressEngine import CompressEngine
-from apps.initial_files.models import InitialFile
-from apps.initial_files.utils import uploading_initial_file
+
+from ..models import InitialFile
+from ..utils import uploading_initial_file
 
 
 class InitialFileType(DjangoObjectType):
@@ -43,8 +44,7 @@ class UploadToInitialFiles(graphene.Mutation):
             message = "We currently do not support this filetype. We will hurry!"
         else:
             message = "Please select file before upload ..."
-        message = UploadToInitialFiles(message=message, action=action_obj)
-        return message
+        return UploadToInitialFiles(message=message, action=action_obj)
 
 
 class Mutation(graphene.ObjectType):

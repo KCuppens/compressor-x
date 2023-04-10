@@ -1,10 +1,12 @@
 import logging
+from typing import Optional
 
 import graphene
 from graphene_django import DjangoObjectType
 
 from apps.base.utils import model_to_dict, models_to_dict
-from apps.blog.models import Blog
+
+from ..models import Blog
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +28,7 @@ class Query(graphene.ObjectType):
     )
     get_blog_detail = graphene.Field(BlogType, id=graphene.String(), lng=graphene.String())
 
-    def resolve_get_blog_detail(self, info, id, lng: str = None):
+    def resolve_get_blog_detail(self, info, id, lng: Optional[str] = None):
         blog = Blog.objects.filter(id=id).first()
         logger.info(f"Get blog detail: {model_to_dict(blog)}")
         if lng:
@@ -38,7 +40,7 @@ class Query(graphene.ObjectType):
         self,
         info,
         name=None,
-        lng: str = None,
+        lng: Optional[str] = None,
         limit=25,
         offset=0,
     ):

@@ -12,7 +12,8 @@ from graphql_jwt.utils import jwt_encode, jwt_payload
 
 from apps.base.utils import model_to_dict
 from apps.mail.tasks import send_email
-from apps.users.utils import decode_token
+
+from ..utils import decode_token
 
 
 logger = logging.getLogger(__name__)
@@ -143,16 +144,14 @@ class LoginUser(graphene.Mutation):
                 token=token,
                 verification_message=verification_message,
             )
-        else:
-            user_exists = User.objects.get(email=email)
-            if user_exists.is_active:
-                logger.info(f"Invalid login credentials: {model_to_dict(user)}")
-                verification_message = "Invalid login credentials."
-                raise GraphQLError(verification_message=verification_message)
-            else:
-                logger.info(f"Email not verified: {model_to_dict(user)}")
-                verification_message = "Your email is not verified."
-                raise GraphQLError(verification_message=verification_message)
+        user_exists = User.objects.get(email=email)
+        if user_exists.is_active:
+            logger.info(f"Invalid login credentials: {model_to_dict(user)}")
+            verification_message = "Invalid login credentials."
+            raise GraphQLError(verification_message=verification_message)
+        logger.info(f"Email not verified: {model_to_dict(user)}")
+        verification_message = "Your email is not verified."
+        raise GraphQLError(verification_message=verification_message)
 
 
 class LogoutUser(graphene.Mutation):

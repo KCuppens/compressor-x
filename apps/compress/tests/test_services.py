@@ -1,15 +1,13 @@
 import os
 from io import BytesIO
 
-import requests
+from django.core.files.storage import default_storage
+
 from PIL import Image
 
 import apps.config_file.constants as C
 from apps.action.tests.factories import ActionFactory
 from apps.base.utils import CustomGraphQLTestCase
-from apps.compress.services.AutoCompress import AutoCompress
-from apps.compress.services.CustomCompress import CustomCompress, _device_package
-from apps.compress.utils import get_filename
 from apps.compressed_file.utils import get_compressed_file_path
 from apps.compression.models import Compression
 from apps.config_file.constants import (
@@ -17,13 +15,18 @@ from apps.config_file.constants import (
     IMAGE_QUALITY_LOSSLESS,
     IMAGE_QUALITY_LOSSY,
 )
-from apps.initial_files.models import InitialFile
+from apps.initial_files.tests.factories import InitialFileFactory
+
+from ..services.AutoCompress import AutoCompress
+from ..services.CustomCompress import CustomCompress, _device_package
+from ..utils import get_filename
 
 
 class AutoCompressTestCase(CustomGraphQLTestCase):
     def setUp(self):
         self.action = ActionFactory()
         self.config_file = self.action.config_file
+        self.initial_file = InitialFileFactory()
 
     def test_image_quality_setting_lossless(self):
         self.assertEqual(AutoCompress().image_quality_setting(self.action), IMAGE_QUALITY_LOSSLESS)
@@ -43,22 +46,23 @@ class AutoCompressTestCase(CustomGraphQLTestCase):
         self.assertEqual(AutoCompress().image_quality_setting(self.action), 99)
 
     def test_optimize_image(self):
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
-        response = requests.get(initial_file_obj.file.url)
-        img = Image.open(BytesIO(response.content))
-        image = AutoCompress().optimize_image(img, 99, initial_file_obj)
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        img = Image.open(BytesIO(file_content))
+        image = AutoCompress().optimize_image(img, 99, self.initial_file)
         self.assertTrue(image)
         self.assertTrue(img.verify)
-        os.remove(get_compressed_file_path(initial_file_obj))
-        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
+        os.remove(get_compressed_file_path(self.initial_file))
+        self.assertFalse(os.path.exists(get_compressed_file_path(self.initial_file)))
 
 
 class CustomCompressTestCase(CustomGraphQLTestCase):
     def setUp(self):
         self.action = ActionFactory()
         self.config_file = self.action.config_file
+        self.initial_file = InitialFileFactory()
 
     def test_customize_size_custom(self):
         # Arrange
@@ -114,11 +118,11 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
 
     def test_get_fit_method(self):
         # Arrange
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
-        response = requests.get(initial_file_obj.file.url)
-        img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        img = Image.open(BytesIO(file_content))
         # Act
         resize_fit = CustomCompress().get_fit_method(img, self.config_file)
         # Assert
@@ -133,11 +137,11 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.config_file.resize_percentage = 50
         self.config_file.save(update_fields=["resize_type", "resize_percentage"])
         override = False
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
-        response = requests.get(initial_file_obj.file.url)
-        old_img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        old_img = Image.open(BytesIO(file_content))
         fit_method = CustomCompress().get_fit_method(old_img, self.config_file)
         compression_filter = CustomCompress().get_compression_filter(self.config_file)
         # Act
@@ -147,9 +151,9 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         # Assert
         self.assertEqual(int(old_img.size[0] / 2), int(img.size[0]))
         self.assertEqual(int(old_img.size[1] / 2), int(img.size[1]))
-        if os.path.exists(get_compressed_file_path(initial_file_obj)):
-            os.remove(get_compressed_file_path(initial_file_obj))
-        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
+        if os.path.exists(get_compressed_file_path(self.initial_file)):
+            os.remove(get_compressed_file_path(self.initial_file))
+        self.assertFalse(os.path.exists(get_compressed_file_path(self.initial_file)))
 
     def test_resize_image_pixel(self):
         # Arrange
@@ -158,11 +162,11 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         override = True
         height = 500
         width = 500
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
-        response = requests.get(initial_file_obj.file.url)
-        old_img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        old_img = Image.open(BytesIO(file_content))
         fit_method = CustomCompress().get_fit_method(old_img, self.config_file)
         compression_filter = CustomCompress().get_compression_filter(self.config_file)
         # Act
@@ -172,9 +176,9 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         # Assert
         self.assertEqual(img.size[0], 500)
         self.assertEqual(img.size[1], 500)
-        if os.path.exists(get_compressed_file_path(initial_file_obj)):
-            os.remove(get_compressed_file_path(initial_file_obj))
-        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
+        if os.path.exists(get_compressed_file_path(self.initial_file)):
+            os.remove(get_compressed_file_path(self.initial_file))
+        self.assertFalse(os.path.exists(get_compressed_file_path(self.initial_file)))
 
     def test_resize_image_pixel_auto_width(self):
         # Arrange
@@ -183,11 +187,11 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         override = True
         height = 500
         width = 0
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
-        response = requests.get(initial_file_obj.file.url)
-        old_img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        old_img = Image.open(BytesIO(file_content))
         fit_method = CustomCompress().get_fit_method(old_img, self.config_file)
         compression_filter = CustomCompress().get_compression_filter(self.config_file)
         # Act
@@ -197,9 +201,9 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         # Assert
         self.assertEqual(img.size[1], 500)
         self.assertNotEqual(img.size[0], 500)
-        if os.path.exists(get_compressed_file_path(initial_file_obj)):
-            os.remove(get_compressed_file_path(initial_file_obj))
-        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
+        if os.path.exists(get_compressed_file_path(self.initial_file)):
+            os.remove(get_compressed_file_path(self.initial_file))
+        self.assertFalse(os.path.exists(get_compressed_file_path(self.initial_file)))
 
     def test_resize_image_pixel_auto_height(self):
         # Arrange
@@ -208,11 +212,11 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         override = True
         height = 0
         width = 500
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
-        response = requests.get(initial_file_obj.file.url)
-        old_img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        old_img = Image.open(BytesIO(file_content))
         fit_method = CustomCompress().get_fit_method(old_img, self.config_file)
         compression_filter = CustomCompress().get_compression_filter(self.config_file)
         # Act
@@ -222,41 +226,41 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         # Assert
         self.assertEqual(img.size[0], 500)
         self.assertNotEqual(img.size[1], 500)
-        if os.path.exists(get_compressed_file_path(initial_file_obj)):
-            os.remove(get_compressed_file_path(initial_file_obj))
-        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
+        if os.path.exists(get_compressed_file_path(self.initial_file)):
+            os.remove(get_compressed_file_path(self.initial_file))
+        self.assertFalse(os.path.exists(get_compressed_file_path(self.initial_file)))
 
     def test_get_convert_type_jpeg(self):
         # Arrange
         self.config_file.convert_type = C.CONVERT_TYPE_JPEG
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
-        response = requests.get(initial_file_obj.file.url)
-        img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        img = Image.open(BytesIO(file_content))
         # Act
         file_type = CustomCompress().get_convert_type(self.config_file, img)
         # Assert
         self.assertEqual(file_type, "jpeg")
-        if os.path.exists(get_compressed_file_path(initial_file_obj)):
-            os.remove(get_compressed_file_path(initial_file_obj))
-        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
+        if os.path.exists(get_compressed_file_path(self.initial_file)):
+            os.remove(get_compressed_file_path(self.initial_file))
+        self.assertFalse(os.path.exists(get_compressed_file_path(self.initial_file)))
 
     def test_get_convert_type_default(self):
         # Arrange
         self.config_file.convert_type = C.CONVERT_TYPE_DEFAULT
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
-        response = requests.get(initial_file_obj.file.url)
-        img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        img = Image.open(BytesIO(file_content))
         # Act
         file_type = CustomCompress().get_convert_type(self.config_file, img)
         # Assert
         self.assertEqual(file_type, img.format)
-        if os.path.exists(get_compressed_file_path(initial_file_obj)):
-            os.remove(get_compressed_file_path(initial_file_obj))
-        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
+        if os.path.exists(get_compressed_file_path(self.initial_file)):
+            os.remove(get_compressed_file_path(self.initial_file))
+        self.assertFalse(os.path.exists(get_compressed_file_path(self.initial_file)))
 
     def test_get_prefix(self):
         # Arrange
@@ -282,18 +286,18 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         # Arrange
         self.config_file.fix_orientation = True
         self.config_file.save(update_fields=["fix_orientation"])
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
-        response = requests.get(initial_file_obj.file.url)
-        old_img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        old_img = Image.open(BytesIO(file_content))
         # Act
         img, exif = CustomCompress().fix_orientation(self.config_file, old_img)
         # Assert
         self.assertTrue(old_img)
-        if os.path.exists(get_compressed_file_path(initial_file_obj)):
-            os.remove(get_compressed_file_path(initial_file_obj))
-        self.assertFalse(os.path.exists(get_compressed_file_path(initial_file_obj)))
+        if os.path.exists(get_compressed_file_path(self.initial_file)):
+            os.remove(get_compressed_file_path(self.initial_file))
+        self.assertFalse(os.path.exists(get_compressed_file_path(self.initial_file)))
 
     def test_save_image(self):
         # Arrange
@@ -301,14 +305,14 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         suffix = "test_suffix"
         filetype = C.CONVERT_TYPE_JPEG
         image_quality = 80
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
         compression = Compression.objects.create(
-            initial_file=initial_file_obj,
+            initial_file=self.initial_file,
         )
-        response = requests.get(initial_file_obj.file.url)
-        img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        img = Image.open(BytesIO(file_content))
         # Act
         img, file_path = CustomCompress().save_image(
             img, self.action, compression, prefix, suffix, filetype, image_quality
@@ -334,16 +338,16 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         suffix = "test_suffix"
         filetype = C.CONVERT_TYPE_JPEG
         image_quality = 80
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
         compression = Compression.objects.create(
-            initial_file=initial_file_obj,
+            initial_file=self.initial_file,
         )
         os.makedirs(f"{self.action.id}/{compression.id}/compressed_files/")
         filename = get_filename(compression.initial_file.file.name)
-        response = requests.get(initial_file_obj.file.url)
-        img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        img = Image.open(BytesIO(file_content))
         fit_method = CustomCompress().get_fit_method(img, self.config_file)
         compression_filter = CustomCompress().get_compression_filter(self.config_file)
         images_zip = CustomCompress().full_optimized_web_package(
@@ -368,15 +372,15 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         self.assertFalse(os.path.exists(f"{self.action.id}/{compression.id}/compressed_files/"))
 
     def test_zip_package(self):
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
         compression = Compression.objects.create(
-            initial_file=initial_file_obj,
+            initial_file=self.initial_file,
         )
         filename = get_filename(compression.initial_file.file.name)
-        response = requests.get(initial_file_obj.file.url)
-        img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        img = Image.open(BytesIO(file_content))
         img.save(
             "test_file.png",
         )
@@ -393,16 +397,16 @@ class CustomCompressTestCase(CustomGraphQLTestCase):
         suffix = "test_suffix"
         filetype = C.CONVERT_TYPE_JPEG
         image_quality = 80
-        initial_file_obj = InitialFile.objects.create(
-            file="test_file.png",
-        )
         compression = Compression.objects.create(
-            initial_file=initial_file_obj,
+            initial_file=self.initial_file,
         )
         os.makedirs(f"{self.action.id}/{compression.id}/compressed_files/")
         filename = get_filename(compression.initial_file.file.name)
-        response = requests.get(initial_file_obj.file.url)
-        img = Image.open(BytesIO(response.content))
+        if not default_storage.exists(self.initial_file.file.name):
+            AssertionError("File does not exist.")
+
+        file_content = default_storage.open(self.initial_file.file.name).read()
+        img = Image.open(BytesIO(file_content))
         fit_method = CustomCompress().get_fit_method(img, self.config_file)
         compression_filter = CustomCompress().get_compression_filter(self.config_file)
         images_zip = _device_package(

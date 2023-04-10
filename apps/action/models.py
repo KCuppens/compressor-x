@@ -1,9 +1,10 @@
 from django.db import models
 
-from apps.action.managers import ActionManager
 from apps.base.models import BaseModel
 from apps.compression.models import Compression
 from apps.config_file.models import ConfigFile
+
+from .managers import ActionManager
 
 
 class Action(BaseModel):

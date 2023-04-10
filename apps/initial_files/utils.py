@@ -2,7 +2,8 @@ import datetime
 
 from apps.base.utils import upload_file_to_media
 from apps.compression.models import Compression
-from apps.initial_files.models import InitialFile
+
+from .models import InitialFile
 
 
 def uploading_initial_file(file, action_obj):
@@ -30,8 +31,7 @@ def get_unique_file_name(file):
     extension = file_name.split(".")[1]
     file_name = file_name.split(".")[0]
     date_now = str(datetime.datetime.now().strftime("%m%d%Y%H%M%S"))
-    unique_file_name = f"{file_name}-" f"{date_now}" f".{extension}"
-    return unique_file_name
+    return f"{file_name}-{date_now}.{extension}"
 
 
 def get_initial_file_path(action_obj, compression_obj, filename):

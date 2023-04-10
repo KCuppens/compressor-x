@@ -4,9 +4,10 @@ from django.db import models, transaction
 from martor.widgets import AdminMartorWidget
 
 from apps.base.utils import image_view
-from apps.blog.models import Blog
 from apps.translations.admin import TranslatableAdmin, TranslationInline
 from apps.translations.tasks import translate_object
+
+from .models import Blog
 
 
 class BlogAdmin(TranslatableAdmin, admin.ModelAdmin):

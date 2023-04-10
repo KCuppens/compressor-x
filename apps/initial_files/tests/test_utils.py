@@ -6,11 +6,8 @@ from apps.action.tests.factories import ActionFactory
 from apps.base.storage_backends import MediaStorage
 from apps.base.utils import CustomGraphQLTestCase
 from apps.compression.tests.factories import CompressionFactory
-from apps.initial_files.utils import (
-    get_initial_file_path,
-    get_unique_file_name,
-    uploading_initial_file,
-)
+
+from ..utils import get_initial_file_path, get_unique_file_name, uploading_initial_file
 
 
 class InitialFileUtilsTestCase(CustomGraphQLTestCase):

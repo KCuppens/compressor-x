@@ -12,19 +12,17 @@ logger = logging.getLogger(__name__)
 class AutoCompress:
     def image_quality_setting(self, action):
         if action.config_file.custom:
-            image_quality = action.config_file.image_quality
-        elif action.config_file.lossless:
-            image_quality = IMAGE_QUALITY_LOSSLESS
-        elif action.config_file.lossy:
-            image_quality = IMAGE_QUALITY_LOSSY
-        return image_quality
+            return action.config_file.image_quality
+        if action.config_file.lossy:
+            return IMAGE_QUALITY_LOSSY
+        return IMAGE_QUALITY_LOSSLESS
 
     def optimize_image(self, img, image_quality, initial_file_obj):
         # Optimize image
         data = list(img.getdata())
-        image = PillImage.new(img.mode, img.size)
-        image.putdata(data)
-        image.save(
+        optimized_image = PillImage.new(img.mode, img.size)
+        optimized_image.putdata(data)
+        optimized_image.save(
             get_compressed_file_path(initial_file_obj),
             img.format,
             optimize=True,
@@ -34,4 +32,4 @@ class AutoCompress:
             f"Image saved to {get_compressed_file_path(initial_file_obj)} with quality"
             f"{image_quality} and filetype {img.format}"
         )
-        return image
+        return optimized_image
