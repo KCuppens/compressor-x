@@ -1,4 +1,4 @@
--r apps.base.txt
+-r base.txt
 
 django-stubs==1.13.0  # https://github.com/typeddjango/django-stubs
 graphene-stubs==4.4.0
