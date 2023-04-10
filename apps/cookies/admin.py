@@ -3,9 +3,10 @@ from django.db import models, transaction
 
 from martor.widgets import AdminMartorWidget
 
-from apps.cookies.models import Cookie
 from apps.translations.admin import TranslatableAdmin, TranslationInline
 from apps.translations.tasks import translate_object
+
+from .models import Cookie
 
 
 class CookieAdmin(TranslatableAdmin, admin.ModelAdmin):

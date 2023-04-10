@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.mail.models import EmailTemplate
+from .models import EmailTemplate
 
 
 admin.site.register(EmailTemplate)

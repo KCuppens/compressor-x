@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-import apps.base.constants as C
+from .constants import STATE_DRAFT, STATE_PUBLISHED, STATES
 
 
 class BaseModel(models.Model):
@@ -34,13 +34,13 @@ class SortableModel(models.Model):
 
 
 class StateModel(models.Model):
-    state = models.CharField(max_length=255, choices=C.STATES, default=C.STATE_DRAFT)
+    state = models.CharField(max_length=255, choices=STATES, default=STATE_DRAFT)
 
     class Meta:
         abstract = True
 
     def is_visible(self):
-        return True if self.state == C.STATE_PUBLISHED else False
+        return True if self.state == STATE_PUBLISHED else False
 
 
 class SeoModel(models.Model):

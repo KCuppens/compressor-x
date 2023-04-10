@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("initial_files", "0001_initial"),
         ("compression", "0001_initial"),

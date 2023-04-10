@@ -1,8 +1,9 @@
 from django.db import transaction
 
 from apps.action.models import Action
-from apps.compress.services.CompressEngine import CompressEngine
 from compressorx.celery import app
+
+from .services.CompressEngine import CompressEngine
 
 
 @transaction.atomic

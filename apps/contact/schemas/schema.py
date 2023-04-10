@@ -4,8 +4,9 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from apps.base.utils import model_to_dict
-from apps.contact.models import Contact
 from apps.mail.tasks import send_email
+
+from ..models import Contact
 
 
 logger = logging.getLogger(__name__)

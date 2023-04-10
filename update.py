@@ -34,10 +34,8 @@ def get_current_tag_name():
     repo = Repo(search_parent_directories=True)
     tag = next((tag for tag in repo.tags if tag.commit == repo.head.commit), None)
     if tag:
-        tagged_version = tag.name
-    else:
-        tagged_version = repo.head.commit.hexsha
-    return tagged_version
+        return tag.name
+    return repo.head.commit.hexsha
 
 
 def update_sources():

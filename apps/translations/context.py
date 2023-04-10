@@ -28,8 +28,8 @@ class Context:
         r"""
         Yield the info about the changed fields in the `Context`\ 's `purview`.
         """
-        for (ct_id, objs) in self.mapping.items():
-            for (obj_id, obj) in objs.items():
+        for ct_id, objs in self.mapping.items():
+            for obj_id, obj in objs.items():
                 for field in type(obj)._get_translatable_fields_names():
                     text = getattr(obj, field, None)
                     default = obj._default_translatable_fields.get(field, None)
@@ -102,7 +102,7 @@ class Context:
         Reset the translations of the `Context`\ 's `purview` to
         the `default language`.
         """
-        for (_ct_id, objs) in self.mapping.items():  # noqa: F841
-            for (_obj_id, obj) in objs.items():  # noqa: F841
-                for (field, value) in obj._default_translatable_fields.items():
+        for _ct_id, objs in self.mapping.items():  # noqa: F841
+            for _obj_id, obj in objs.items():  # noqa: F841
+                for field, value in obj._default_translatable_fields.items():
                     setattr(obj, field, value)

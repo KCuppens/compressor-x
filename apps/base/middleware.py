@@ -28,8 +28,8 @@ class AdminModelOverrideMiddleware(MiddlewareMixin):
 
     def get_model_name(self, app_name, model_name):
         if "." not in model_name:
-            model_name = "%s.%s" % (app_name, model_name)
-        return model_name
+            return "%s.%s" % (app_name, model_name)
+        return None
 
     def get_sortable_config(self):
         config = deepcopy(self.config)
@@ -112,16 +112,15 @@ class AdminModelOverrideMiddleware(MiddlewareMixin):
                 if "delete" in app_config:
                     app_list.remove(app_exists)
                     continue
-                else:
-                    # Override label of the app
-                    app_list = self.override_app_label(app_list, app_config)
-                    # Get all the models that are not yet in the correct app according to config
-                    non_existent_models = self.check_model_already_in_app(app_config, app_exists)
-                    # Check if non_existent_models is not empty and if they exist in app_list
-                    if non_existent_models:
-                        non_existent_models = self.check_model_exists_in_app(non_existent_models)
-                        # If they exist add them in the correct app in the app_list
-                        app_list = self.make_app_list(app_list, app_config, non_existent_models)
+                # Override label of the app
+                app_list = self.override_app_label(app_list, app_config)
+                # Get all the models that are not yet in the correct app according to config
+                non_existent_models = self.check_model_already_in_app(app_config, app_exists)
+                # Check if non_existent_models is not empty and if they exist in app_list
+                if non_existent_models:
+                    non_existent_models = self.check_model_exists_in_app(non_existent_models)
+                    # If they exist add them in the correct app in the app_list
+                    app_list = self.make_app_list(app_list, app_config, non_existent_models)
         return app_list
 
     def override_app_label(self, app_list, app_config):
@@ -146,11 +145,11 @@ class AdminModelOverrideMiddleware(MiddlewareMixin):
                 if count <= 1:
                     app_list.remove(app)
                     return app_list
-                else:
-                    for model_dict in app["models"]:
-                        if model_dict["object_name"] == model.split(".")[1]:
-                            app["models"].remove(model_dict)
-                    return app_list
+                for model_dict in app["models"]:
+                    if model_dict["object_name"] == model.split(".")[1]:
+                        app["models"].remove(model_dict)
+                return app_list
+        return None
 
     def get_model_dict(self, model):
         model = apps.get_model(model)

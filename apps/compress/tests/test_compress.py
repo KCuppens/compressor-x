@@ -1,15 +1,16 @@
 from apps.action.tests.factories import ActionFactory
 from apps.base.storage_backends import MediaStorage
 from apps.base.utils import CustomGraphQLTestCase
-from apps.compress.services.CompressEngine import (
+from apps.compressed_file.models import CompressedFile
+from apps.compression.models import Compression
+from apps.initial_files.models import InitialFile
+
+from ..services.CompressEngine import (
     CompressEngine,
     auto_compress,
     calculate_step_percentage,
     custom_compress,
 )
-from apps.compressed_file.models import CompressedFile
-from apps.compression.models import Compression
-from apps.initial_files.models import InitialFile
 
 
 class CompressEngineTestCase(CustomGraphQLTestCase):

@@ -1,6 +1,6 @@
 import factory.fuzzy
 
-from apps.blog.models import Blog
+from ..models import Blog
 
 
 class BlogFactory(factory.django.DjangoModelFactory):

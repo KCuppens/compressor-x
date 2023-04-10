@@ -67,7 +67,7 @@ DATABASES = {
         "HOST": env.str("DB_HOST", "localhost"),
         "PORT": "3306",
         "OPTIONS": {
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'; ",
         },
     },
 }
@@ -188,7 +188,7 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
 AWS_DEFAULT_ACL = "public-read"
-AWS_S3_CUSTOM_DOMAIN = "dqs5vrzwaxk68.cloudfront.net"
+AWS_S3_CUSTOM_DOMAIN = "compressor-x.s3.eu-central-1.amazonaws.com"
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 # s3 static settings
 STATIC_LOCATION = "static"
@@ -272,7 +272,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s " "%(process)d %(thread)d %(message)s"
+            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
         }
     },
     "handlers": {
@@ -398,4 +398,4 @@ ADMIN_MODEL_OVERRIDE = [
 DEEPL_API_KEY = env.str("DEEPL_API_KEY", default="")
 
 
-ASGI_APPLICATION = "app.asgi.application"
+ASGI_APPLICATION = "compressorx.asgi.application"

@@ -9,8 +9,9 @@ import pytest
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
 from apps.base.utils import CustomGraphQLTestCase
-from apps.users.tests.factories import UserFactory
-from apps.users.tokens import account_activation_token
+
+from ..tokens import account_activation_token
+from .factories import UserFactory
 
 
 class UserTestCase(JSONWebTokenTestCase):

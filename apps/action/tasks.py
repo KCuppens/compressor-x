@@ -2,8 +2,9 @@ from datetime import datetime, timedelta
 
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
-from apps.action.models import Action
 from compressorx.celery import app
+
+from .models import Action
 
 
 now = datetime.now()
@@ -46,5 +47,5 @@ schedule, _ = CrontabSchedule.objects.get_or_create(
 PeriodicTask.objects.create(
     crontab=schedule,
     name="Delete expired actions",
-    task="apps.action.tasks.delete_expired_actions",
+    task="action.tasks.delete_expired_actions",
 )

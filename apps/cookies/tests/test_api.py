@@ -1,7 +1,8 @@
 import pytest
 
 from apps.base.utils import CustomGraphQLTestCase
-from apps.cookies.tests.factories import CookieFactory
+
+from .factories import CookieFactory
 
 
 class CookieTestcase(CustomGraphQLTestCase):

@@ -1,6 +1,6 @@
 import factory.fuzzy
 
-from apps.cookies.models import Cookie
+from ..models import Cookie
 
 
 class CookieFactory(factory.django.DjangoModelFactory):

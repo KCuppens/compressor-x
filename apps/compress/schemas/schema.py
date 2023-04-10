@@ -2,7 +2,8 @@ import graphene
 
 from apps.action.models import Action
 from apps.action.schemas.schema import ActionType
-from apps.compress.tasks import compress_action
+
+from ..tasks import compress_action
 
 
 class CompressAction(graphene.Mutation):

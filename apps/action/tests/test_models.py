@@ -1,5 +1,6 @@
-from apps.action.tests.factories import ActionFactory
 from apps.base.utils import CustomGraphQLTestCase
+
+from .factories import ActionFactory
 
 
 class ActionModelsTestCase(CustomGraphQLTestCase):

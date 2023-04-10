@@ -4,11 +4,12 @@ from PIL import Image as PillImage
 
 import apps.initial_files.constants as C
 from apps.base.utils import send_progress_websocket
-from apps.compress.services.AutoCompress import AutoCompress
-from apps.compress.services.CustomCompress import CustomCompress
-from apps.compress.utils import get_filename
 from apps.compressed_file.models import CompressedFile
 from apps.compressed_file.utils import get_compressed_file_path
+
+from ..utils import get_filename
+from .AutoCompress import AutoCompress
+from .CustomCompress import CustomCompress
 
 
 class CompressEngine:

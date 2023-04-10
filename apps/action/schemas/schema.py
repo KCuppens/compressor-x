@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 
-from apps.action.models import Action
+from ..models import Action
 
 
 class ActionType(DjangoObjectType):

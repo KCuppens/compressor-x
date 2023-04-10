@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("compression", "0001_initial"),
         ("action", "0001_initial"),

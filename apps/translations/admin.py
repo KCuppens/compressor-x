@@ -6,8 +6,8 @@ from django.db import models
 
 from martor.widgets import AdminMartorWidget
 
-from apps.translations.forms import generate_translation_form
-from apps.translations.models import Translation
+from .forms import generate_translation_form
+from .models import Translation
 
 
 __docformat__ = "restructuredtext"

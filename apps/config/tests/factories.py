@@ -1,6 +1,6 @@
 import factory.fuzzy
 
-from apps.config.models import Config
+from ..models import Config
 
 
 class ConfigFactory(factory.django.DjangoModelFactory):

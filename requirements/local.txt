@@ -1,6 +1,6 @@
 # Here are the requirements for developers.
 # It typically adds a bunch of libraries used for code kwalitee analysis and debugging.
--r base.txt
+-r apps.base.txt
 -r tests.txt
 
 # Code quality (most of those tools are now automatically installed by pre-commit)
