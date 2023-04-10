@@ -1,7 +1,6 @@
 -r base.txt
 
 django-stubs==1.13.0  # https://github.com/typeddjango/django-stubs
-graphene-stubs==4.4.0
 pytest==7.2.0
 pytest-cov==4.0.0
 
