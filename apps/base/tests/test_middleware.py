@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from django.conf import settings
 from django.test import TestCase
 
-from ..middleware import AdminModelOverrideMiddleware
+from apps.base.middleware import AdminModelOverrideMiddleware
 
 
 class MyMiddlewareTestCase(TestCase):

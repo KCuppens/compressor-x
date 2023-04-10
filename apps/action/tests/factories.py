@@ -1,6 +1,6 @@
 import factory
 
-from ..models import Action
+from apps.action.models import Action
 
 
 class ActionFactory(factory.django.DjangoModelFactory):

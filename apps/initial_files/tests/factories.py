@@ -1,6 +1,6 @@
 import factory
 
-from ..models import InitialFile
+from apps.initial_files.models import InitialFile
 
 
 class InitialFileFactory(factory.django.DjangoModelFactory):
