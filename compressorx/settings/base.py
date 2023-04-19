@@ -30,6 +30,14 @@ env.read_env(ROOT_DIR / ".env")
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env.bool("DEBUG", default=False)
 
+
+# https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["api.compressor-x.com"])
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=["api.compressor-x.com"],
+)
+
 # Local time zone. Choices are
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
@@ -260,6 +268,22 @@ X_FRAME_OPTIONS = "DENY"
 # ------------------------------------------------------------------------------
 # Django Admin URL.
 ADMIN_URL = "admin/"
+
+# CORS_ORIGIN_ALLOW_ALL = True   # If this is used then `CORS_ORIGIN_WHITELIST`
+# will not have any effect
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = env.list(
+    "CORS_ORIGIN_WHITELIST",
+    default=[
+        "https://demo-compress-x.vercel.app",
+        "http://demo-compress-x.vercel.app",
+        # in order to be able to use local FE with dev servers
+        "http://localhost:3000",
+        "http://localhost:*",
+        "http://127.0.0.1:3000",
+    ],
+)
 
 
 # LOGGING

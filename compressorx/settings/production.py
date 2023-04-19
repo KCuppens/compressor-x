@@ -1,6 +1,5 @@
 # Production settings. To be used for every production deployment (staging, dev, prod).
 import logging
-from typing import List
 
 import sentry_sdk
 from sentry_sdk.integrations.celery import CeleryIntegration
@@ -16,11 +15,6 @@ from .base import env
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY")
-
-
-# https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[""])
-CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[""])
 
 
 # STATIC
@@ -56,15 +50,6 @@ EMAIL_TIMEOUT = 5
 # ------------------------------------------------------------------------------
 # Django Admin URL regex.
 ADMIN_URL = env("DJANGO_ADMIN_URL")
-
-CORS_ORIGIN_WHITELIST = env.list(
-    "CORS_ORIGIN_WHITELIST",
-    default=[],
-)
-
-# adding regexp CORS incl. legacy support
-CORS_ORIGIN_REGEX_WHITELIST: List[str] = []
-CORS_ALLOWED_ORIGIN_REGEXES: List[str] = []
 
 CELERY_BROKER_URL = env("REDIS", default="redis://localhost:6379")
 CELERY_ONCE = {
