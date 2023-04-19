@@ -284,6 +284,17 @@ CORS_ORIGIN_WHITELIST = env.list(
         "http://127.0.0.1:3000",
     ],
 )
+CORS_ALLOWED_ORIGINS = env.list(
+    "CORS_ORIGIN_WHITELIST",
+    default=[
+        "https://demo-compress-x.vercel.app",
+        "http://demo-compress-x.vercel.app",
+        # in order to be able to use local FE with dev servers
+        "http://localhost:3000",
+        "http://localhost:*",
+        "http://127.0.0.1:3000",
+    ],
+)
 
 
 # LOGGING
@@ -363,7 +374,6 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # will not have any effect
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST", default=[])
 
 
 # compressorx App
