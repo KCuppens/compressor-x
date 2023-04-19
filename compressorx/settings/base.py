@@ -348,7 +348,7 @@ APP_CONFIG = env.str("CONFIG", "DEV")  # Used to name celery queues
 
 # APP_DOMAIN is the domain name used by the frontend app connected to this backend.
 # This is used to build email links.
-APP_DOMAIN = env.str("APP_DOMAIN", default="http://localhost:4200/")
+APP_DOMAIN = env.str("APP_DOMAIN", default="http://localhost:3000/")
 
 ENFORCE_EMAIL_VERIFICATION = env.bool("ENFORCE_EMAIL_VERIFICATION", True)
 

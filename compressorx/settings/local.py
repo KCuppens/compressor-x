@@ -11,10 +11,12 @@ DEBUG = True
 CORS_ORIGIN_WHITELIST = env.list(
     "CORS_ORIGIN_WHITELIST",
     default=[
-        "http://localhost:4200",
-        "http://127.0.0.1:4200",
-        "http://localhost:8000",
-        "http://127.0.0.1:4200",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://demo-compress-x.vercel.app",
+        "http://demo-compress-x.vercel.app",
     ],
 )
 SECRET_KEY = env(
