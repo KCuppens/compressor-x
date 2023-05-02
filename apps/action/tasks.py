@@ -46,6 +46,6 @@ schedule, _ = CrontabSchedule.objects.get_or_create(
 
 PeriodicTask.objects.create(
     crontab=schedule,
-    name="Delete expired actions",
+    name="Delete expired actions every 6 hours",
     task="action.tasks.delete_expired_actions",
 )
