@@ -9,7 +9,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from apps.base.channels import CompressProgressConsumer
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "compressorx.settings.development")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "compressorx.settings.production")
 django_asgi_app = get_asgi_application()
 
 websocket_urlpatterns = [
