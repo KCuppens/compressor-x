@@ -3,6 +3,7 @@ from graphene import ObjectType, Schema
 from apps.action.schemas.schema import Mutation as ActionMutation
 from apps.blog.schemas.schema import Query as BlogQuery
 from apps.compress.schemas.schema import Mutation as CompressMutation
+from apps.config_file.schemas.schema import Mutation as ConfigFileMutation
 from apps.contact.schemas.schema import Mutation as ContactMutation
 from apps.cookies.schemas.schema import Query as CookieQuery
 from apps.initial_files.schemas.schema import Mutation as InitialFileMutation
@@ -20,6 +21,7 @@ class Query(
 
 
 class Mutation(
+    ConfigFileMutation,
     CompressMutation,
     InitialFileMutation,
     ActionMutation,
