@@ -1,6 +1,5 @@
+from asgiref.sync import async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer
-
-from .utils import async_to_sync
 
 
 class CompressProgressConsumer(AsyncWebsocketConsumer):
