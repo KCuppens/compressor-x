@@ -84,7 +84,6 @@ repos:
           - boto3
           - celery_once
           - django-import-export
-          - "django-graphql-playground==1.0.0"
           - django_extensions
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit

@@ -112,8 +112,6 @@ THIRD_PARTY_APPS = [
     "health_check.storage",
     "import_export",  # Import and export data with included admin integration (Excel, CSV, JSON)
     "graphene_django",
-    "graphql_playground",  # GraphQL IDE
-    "adminsortable2",
     "martor",
     "mptt",
     "storages",

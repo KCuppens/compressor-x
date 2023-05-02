@@ -2,19 +2,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.views.decorators.csrf import csrf_exempt
 
 from graphene_file_upload.django import FileUploadGraphQLView
-from graphql_playground.views import GraphQLPlaygroundView
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("health/", include("health_check.urls")),
-    path(
-        "graphql/",
-        FileUploadGraphQLView.as_view(graphiql=True),
-    ),
-    path("playground/", GraphQLPlaygroundView.as_view(endpoint="/graphql/")),
+    path("graphql/", csrf_exempt(FileUploadGraphQLView.as_view(graphiql=True))),
     path("martor/", include("martor.urls")),
 ]
 
