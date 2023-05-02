@@ -271,7 +271,6 @@ ADMIN_URL = "admin/"
 
 # CORS_ORIGIN_ALLOW_ALL = True   # If this is used then `CORS_ORIGIN_WHITELIST`
 # will not have any effect
-CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = env.list(
     "CORS_ORIGIN_WHITELIST",
@@ -369,7 +368,6 @@ CELERY_DEFAULT_ROUTING_KEY = "default"
 CELERY_ACKS_LATE = True
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
-CORS_URLS_REGEX = r"^/api/.*$"
 # CORS_ORIGIN_ALLOW_ALL = True   # If this is used then `CORS_ORIGIN_WHITELIST`
 # will not have any effect
 CORS_ORIGIN_ALLOW_ALL = False
