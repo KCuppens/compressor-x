@@ -23,8 +23,7 @@ class PageAdmin(TranslatableAdmin, admin.ModelAdmin):
 
     actions = ["make_published", "make_draft"]
     search_fields = ("key_name",)
-    list_display = ("key_name", "state", "title")
-    list_editable = ("state",)
+    list_display = ("key_name", "title")
 
     formfield_overrides = {
         models.TextField: {"widget": AdminMartorWidget},

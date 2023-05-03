@@ -6,23 +6,6 @@ from apps.base.models import BaseModel
 from apps.translations.models import Translatable
 
 
-class PageElement(BaseModel, Translatable):
-    title = models.CharField(max_length=255, blank=True, null=True)
-    subtitle = models.CharField(max_length=255, blank=True, null=True)
-    slug = AutoSlugField(populate_from="title", unique=True)
-    content = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to="page_elements", blank=True, null=True)
-    button_text = models.CharField(max_length=255, blank=True, null=True)
-    button_url = models.URLField(blank=True, null=True)
-
-    class Meta:
-        verbose_name = "Page Element"
-        verbose_name_plural = "Page Elements"
-
-    class TranslationMeta:
-        fields = ["title", "subtitle", "slug", "content", "button_text", "button_url"]
-
-
 class Page(BaseModel, Translatable):
     key_name = models.CharField(max_length=255, blank=True, null=True)
     title = models.CharField(max_length=255, blank=True, null=True)
@@ -31,7 +14,6 @@ class Page(BaseModel, Translatable):
     meta_title = models.CharField(max_length=255, blank=True, null=True)
     meta_description = models.CharField(max_length=255, blank=True, null=True)
     meta_keywords = models.CharField(max_length=255, blank=True, null=True)
-    page_elements = models.ManyToManyField(PageElement, blank=True)
 
     class Meta:
         verbose_name = "Page"
@@ -46,6 +28,24 @@ class Page(BaseModel, Translatable):
             "meta_description",
             "meta_keywords",
         ]
+
+
+class PageElement(BaseModel, Translatable):
+    title = models.CharField(max_length=255, blank=True, null=True)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
+    slug = AutoSlugField(populate_from="title", unique=True)
+    content = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to="page_elements", blank=True, null=True)
+    button_text = models.CharField(max_length=255, blank=True, null=True)
+    button_url = models.URLField(blank=True, null=True)
+    page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="elements")
+
+    class Meta:
+        verbose_name = "Page Element"
+        verbose_name_plural = "Page Elements"
+
+    class TranslationMeta:
+        fields = ["title", "subtitle", "slug", "content", "button_text", "button_url"]
 
 
 class PageText(BaseModel, Translatable):
