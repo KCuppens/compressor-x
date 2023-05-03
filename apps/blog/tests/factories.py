@@ -10,3 +10,4 @@ class BlogFactory(factory.django.DjangoModelFactory):
     name = factory.fuzzy.FuzzyText(length=12)
     description = factory.fuzzy.FuzzyText(length=48)
     keywords = factory.fuzzy.FuzzyText(length=36)
+    image = factory.django.ImageField(color="blue")

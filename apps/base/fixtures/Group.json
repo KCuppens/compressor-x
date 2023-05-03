@@ -124,26 +124,6 @@
           "contenttype"
         ],
         [
-          "add_emailtemplate",
-          "mail",
-          "emailtemplate"
-        ],
-        [
-          "change_emailtemplate",
-          "mail",
-          "emailtemplate"
-        ],
-        [
-          "delete_emailtemplate",
-          "mail",
-          "emailtemplate"
-        ],
-        [
-          "view_emailtemplate",
-          "mail",
-          "emailtemplate"
-        ],
-        [
           "add_session",
           "sessions",
           "session"
@@ -182,26 +162,6 @@
           "view_site",
           "sites",
           "site"
-        ],
-        [
-          "add_user",
-          "users",
-          "user"
-        ],
-        [
-          "change_user",
-          "users",
-          "user"
-        ],
-        [
-          "delete_user",
-          "users",
-          "user"
-        ],
-        [
-          "view_user",
-          "users",
-          "user"
         ]
       ]
     },

@@ -35,7 +35,7 @@ DEBUG = env.bool("DEBUG", default=False)
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["api.compressor-x.com"])
 CSRF_TRUSTED_ORIGINS = env.list(
     "CSRF_TRUSTED_ORIGINS",
-    default=["api.compressor-x.com"],
+    default=["https://api.compressor-x.com"],
 )
 
 # Local time zone. Choices are
@@ -128,8 +128,11 @@ LOCAL_APPS = [
     "apps.config_file",
     "apps.contact",
     "apps.cookies",
+    "apps.faq",
     "apps.initial_files",
+    "apps.locales",
     "apps.mail",
+    "apps.pages",
     "apps.translations",
     "apps.users",
 ]

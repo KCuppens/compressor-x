@@ -5,8 +5,8 @@ import copy
 from django.db.models import Q
 from django.db.models.constants import LOOKUP_SEP
 
-from apps.translations.languages import _get_default_language, _get_probe_language
-from apps.translations.utils import _get_dissected_lookup
+from .languages import _get_default_language, _get_probe_language
+from .utils import _get_dissected_lookup
 
 
 __docformat__ = "restructuredtext"
@@ -14,17 +14,19 @@ __docformat__ = "restructuredtext"
 
 def _fetch_translations_query_getter(model, lang):
     """
+    Return the translations query.
+
     Return the translations query getter specialized for a model and some
     language(s).
     """
     default = _get_default_language()
 
     def _get_translations_query(*args, **kwargs):
+        """Get the translations query for a model and some language(s)."""
         connector = kwargs.pop("_connector", None)
         negated = kwargs.pop("_negated", False)
 
         children = list(args) + sorted(kwargs.items())
-
         for index, child in enumerate(children):
             if isinstance(child, tuple):
                 dissected = _get_dissected_lookup(model, child[0])
@@ -63,8 +65,7 @@ def _fetch_translations_query_getter(model, lang):
                             if isinstance(query_languages, (list, tuple))
                             else ""
                         )
-
-                        q |= Q(
+                        q = Q(
                             **{
                                 "{}__field".format(relation): dissected["field"],
                                 "{}__text{}".format(relation, field_supp): child[1],
@@ -88,16 +89,15 @@ def _fetch_translations_query_getter(model, lang):
             else:
                 continue
             children[index] = q
-
-        query = Q(*children, _connector=connector, _negated=negated)
-
-        return query
+        return Q(*children, _connector=connector, _negated=negated)
 
     return _get_translations_query
 
 
 class TQ(Q):
     """
+    Encapsulate translations.
+
     Encapsulate translation queries as objects that can then be combined
     logically (using `&` and `|`).
     """

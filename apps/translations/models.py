@@ -1,12 +1,14 @@
 """This module contains the models for the Translations app."""
 
-from django.conf import settings
+import uuid
+
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.translations.querysets import TranslatableQuerySet
+from .querysets import TranslatableQuerySet
+from .utils import get_languages
 
 
 __docformat__ = "restructuredtext"
@@ -21,14 +23,11 @@ class Translation(models.Model):
         to=ContentType,
         on_delete=models.CASCADE,
     )
-    object_id = models.CharField(
+    object_id = models.UUIDField(
+        default=uuid.uuid4,
         verbose_name=_("object id"),
         help_text=_("the id of the object to translate"),
-        max_length=128,
-    )
-    content_object = GenericForeignKey(
-        ct_field="content_type",
-        fk_field="object_id",
+        max_length=256,
     )
     field = models.CharField(
         verbose_name=_("field"),
@@ -39,11 +38,22 @@ class Translation(models.Model):
         verbose_name=_("language"),
         help_text=_("the language of the translation"),
         max_length=32,
-        choices=settings.LANGUAGES,
+        choices=get_languages(),
     )
     text = models.TextField(
         verbose_name=_("text"),
         help_text=_("the text of the translation"),
+    )
+
+    content_object = GenericForeignKey(
+        ct_field="content_type",
+        fk_field="object_id",
+    )
+    content_type = models.ForeignKey(
+        verbose_name=_("content type"),
+        help_text=_("the content type of the object to translate"),
+        to=ContentType,
+        on_delete=models.CASCADE,
     )
 
     def __str__(self):
@@ -53,19 +63,19 @@ class Translation(models.Model):
             translation=self.text,
         )
 
-    class Meta:
-        unique_together = (
-            "content_type",
-            "object_id",
-            "field",
-            "language",
-        )
-        verbose_name = _("translation")
-        verbose_name_plural = _("translations")
-
 
 class Translatable(models.Model):
     """An abstract model which provides custom translation functionalities."""
+
+    class Meta:
+        """The meta data of the `Translatable` model."""
+
+        abstract = True
+
+    class TranslatableMeta:
+        """The meta data of the `Translatable` model."""
+
+        fields = None
 
     objects = TranslatableQuerySet.as_manager()
     translations = GenericRelation(
@@ -74,17 +84,6 @@ class Translatable(models.Model):
         object_id_field="object_id",
         related_query_name="%(app_label)s_%(class)s",
     )
-
-    class Meta:
-        abstract = True
-
-    class TranslatableMeta:
-        """
-        This class contains meta information about the translation
-        of the model instances.
-        """
-
-        fields = None
 
     @classmethod
     def get_translatable_fields(cls):

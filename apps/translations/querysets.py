@@ -2,13 +2,9 @@
 
 from django.db.models import query
 
-from apps.translations.context import Context
-from apps.translations.languages import (
-    _get_default_language,
-    _get_probe_language,
-    _get_translate_language,
-)
-from apps.translations.query import _fetch_translations_query_getter
+from .context import Context
+from .languages import _get_default_language, _get_probe_language, _get_translate_language
+from .query import _fetch_translations_query_getter
 
 
 __docformat__ = "restructuredtext"
@@ -24,6 +20,41 @@ class TranslatableQuerySet(query.QuerySet):
         self._trans_prob = _get_default_language()
         self._trans_rels = ()
         self._trans_cache = False
+
+    def translate(self, lang=None):
+        """Translate the `TranslatableQuerySet` in a language."""
+        clone = self.all()
+        clone._trans_lang = _get_translate_language(lang)
+        return clone
+
+    def translate_related(self, *fields):
+        """Translate some relations of the `TranslatableQuerySet`."""
+        clone = self.all()
+        clone._trans_rels = () if fields == (None,) else fields
+        return clone
+
+    def probe(self, lang=None):
+        """Probe the `TranslatableQuerySet` in some language(s)."""
+        clone = self.all()
+        probe_lang = _get_probe_language(lang)
+        clone._trans_prob = probe_lang
+        self._trans_prob = probe_lang
+        return clone
+
+    def filter(self, *args, **kwargs):
+        """Filter the `TranslatableQuerySet`."""
+        if not (args or kwargs):
+            return super(TranslatableQuerySet, self).filter()
+        query = _fetch_translations_query_getter(self.model, self._trans_prob)(*args, **kwargs)
+        return super(TranslatableQuerySet, self).filter(query)
+
+    def exclude(self, *args, **kwargs):
+        """Exclude the `TranslatableQuerySet`."""
+        if not (args or kwargs):
+            return super(TranslatableQuerySet, self).exclude()
+
+        query = _fetch_translations_query_getter(self.model, self._trans_prob)(*args, **kwargs)
+        return super(TranslatableQuerySet, self).exclude(query)
 
     def _chain(self, **kwargs):
         """Return a copy of the current `TranslatableQuerySet`."""
@@ -57,37 +88,3 @@ class TranslatableQuerySet(query.QuerySet):
             with Context(self._result_cache, *self._trans_rels) as context:
                 context.read(self._trans_lang)
             self._trans_cache = True
-
-    def translate(self, lang=None):
-        """Translate the `TranslatableQuerySet` in a language."""
-        clone = self.all()
-        clone._trans_lang = _get_translate_language(lang)
-        return clone
-
-    def translate_related(self, *fields):
-        """Translate some relations of the `TranslatableQuerySet`."""
-        clone = self.all()
-        clone._trans_rels = () if fields == (None,) else fields
-        return clone
-
-    def probe(self, lang=None):
-        """Probe the `TranslatableQuerySet` in some language(s)."""
-        clone = self.all()
-        clone._trans_prob = _get_probe_language(lang)
-        return clone
-
-    def filter(self, *args, **kwargs):
-        """Filter the `TranslatableQuerySet`."""
-        if not (args or kwargs):
-            return super(TranslatableQuerySet, self).filter()
-
-        query = _fetch_translations_query_getter(self.model, self._trans_prob)(*args, **kwargs)
-        return super(TranslatableQuerySet, self).filter(query)
-
-    def exclude(self, *args, **kwargs):
-        """Exclude the `TranslatableQuerySet`."""
-        if not (args or kwargs):
-            return super(TranslatableQuerySet, self).exclude()
-
-        query = _fetch_translations_query_getter(self.model, self._trans_prob)(*args, **kwargs)
-        return super(TranslatableQuerySet, self).exclude(query)

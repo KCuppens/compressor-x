@@ -17,10 +17,7 @@ class TranslatableAdminMixin:
     """An admin mixin which provides custom translation functionalities."""
 
     def prepare_translation_inlines(self, inlines, inline_type):
-        """
-        Prepare the translation inlines of a type in some inlines based on the
-        admin model.
-        """
+        """Prepare the translation inlines of the admin."""
         form = generate_translation_form(self.model)
         remove_inlines = []
         for i, v in enumerate(inlines):
@@ -38,6 +35,7 @@ class TranslatableAdmin(TranslatableAdminMixin, admin.ModelAdmin):
     """The admin which represents the `Translatable` instances."""
 
     def get_inline_instances(self, request, obj=None):
+        """Get the inline instances of the admin."""
         inlines = list(super(TranslatableAdmin, self).get_inline_instances(request, obj))
         self.prepare_translation_inlines(inlines, TranslationInline)
         return inlines

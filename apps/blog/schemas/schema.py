@@ -1,10 +1,13 @@
+"""Blog schema module."""
 import logging
-from typing import Optional
+
+from django.db.models import Q
 
 import graphene
 from graphene_django import DjangoObjectType
 
-from apps.base.utils import model_to_dict, models_to_dict
+from apps.base.constants import STATE_PUBLISHED
+from apps.base.utils import models_to_dict
 
 from ..models import Blog
 
@@ -13,39 +16,60 @@ logger = logging.getLogger(__name__)
 
 
 class BlogType(DjangoObjectType):
+    """Blog type."""
+
     class Meta:
+        """Meta class for BlogType."""
+
         model = Blog
         fields = "__all__"
 
+    def resolve_image(self, info):
+        """Return image url"""
+        return self.image.url or ""
+
 
 class Query(graphene.ObjectType):
+    """Query class for blog schema."""
+
     get_filter_blogs = graphene.List(
         BlogType,
         name=graphene.String(),
         lng=graphene.String(),
+        sort=graphene.String(),
         limit=graphene.Int(),
         offset=graphene.Int(),
     )
-    get_blog_detail = graphene.Field(BlogType, id=graphene.String(), lng=graphene.String())
+    get_blog_detail = graphene.Field(BlogType, slug=graphene.String(), lng=graphene.String())
 
-    def resolve_get_blog_detail(self, info, id, lng: Optional[str] = None):
-        blog = Blog.objects.filter(id=id).first()
-        logger.info(f"Get blog detail: {model_to_dict(blog)}")
+    def resolve_get_blog_detail(self, info, slug, lng: str = None):
+        blogs = Blog.objects.all()
         if lng:
-            blog = blog.translate(lng)
-            logger.info(f"Get translated blog detail: {model_to_dict(blog)}")
-        return blog
+            blogs = blogs.distinct().probe(lng)
+        blogs = blogs.filter(slug=slug, state=STATE_PUBLISHED)
+        logger.info(f"Get blog detail: {models_to_dict(blogs)}")
+        if lng:
+            logger.info(f"Get translated blog detail: {models_to_dict(blogs)}")
+            return blogs.translate(lng).first()
+        return blogs.first()
 
     def resolve_get_filter_blogs(
         self,
         info,
         name=None,
-        lng: Optional[str] = None,
+        lng: str = None,
+        sort="date_desc",
         limit=25,
         offset=0,
     ):
+        blogs = Blog.objects.filter(state=STATE_PUBLISHED)
         if name:
-            blogs = Blog.objects.filter(name__icontains=name).order_by("-id")
+            blogs = blogs.filter(
+                Q(name__contains=name)
+                | Q(description__contains=name)
+                | Q(slug__contains=name)
+                | Q(keywords__contains=name)
+            )
             logger.info(f"Get blogs by name: {models_to_dict(blogs)}")
         if lng:
             blogs = blogs.translate(lng)

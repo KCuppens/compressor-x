@@ -1,3 +1,4 @@
+"""Cookie Admin."""
 from django.contrib import admin
 from django.db import models, transaction
 
@@ -10,10 +11,13 @@ from .models import Cookie
 
 
 class CookieAdmin(TranslatableAdmin, admin.ModelAdmin):
+    """Cookie Admin."""
+
     actions = ["make_published", "make_draft"]
-    list_display = ("title",)
+    list_display = ("title", "state")
     fields = (
         "title",
+        "state",
         "message",
         "essential_functional_cookies_description",
         "analytical_cookies_description",
@@ -28,6 +32,7 @@ class CookieAdmin(TranslatableAdmin, admin.ModelAdmin):
     ]
 
     def save_model(self, request, obj, form, change):
+        """Translate empty cookie fields."""
         obj.user = request.user
         transaction.on_commit(lambda: translate_object.delay("cookies.Cookie", obj.id))
         super().save_model(request, obj, form, change)

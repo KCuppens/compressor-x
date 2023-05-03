@@ -1,7 +1,8 @@
 """This module contains the languages for the Translations app."""
 
-from django.conf import settings
 from django.utils.translation import get_language
+
+from apps.locales.models import Locale
 
 
 __docformat__ = "restructuredtext"
@@ -26,11 +27,11 @@ def _get_supported_language(lang):
 
         # break when the lang is found but not when the code is found
         # cause the code might come before lang and we may miss an accent
-        for choice in settings.LANGUAGES:
-            if lang == choice[0]:
+        for locale in Locale.objects.filter(is_active=True):
+            if lang == locale.code:
                 lang_exists = True
                 break
-            if code == choice[0]:
+            if code == locale.code:
                 code_exists = True
         if lang_exists:
             _supported_code[lang] = lang
@@ -43,7 +44,7 @@ def _get_supported_language(lang):
 
 def _get_default_language():
     """Return the `supported language` code of the `default language` code."""
-    return _get_supported_language(settings.LANGUAGE_CODE)
+    return _get_supported_language(Locale.objects.filter(is_default=True).first().code)
 
 
 def _get_active_language():
@@ -55,7 +56,7 @@ def _get_all_languages():
     """Return all the `supported language` codes."""
     global _all_codes
     if _all_codes is None:
-        _all_codes = [choice[0] for choice in settings.LANGUAGES]
+        return [locale.code for locale in Locale.objects.filter(is_active=True)]
     return _all_codes
 
 
@@ -66,7 +67,9 @@ def _get_all_choices():
         _all_choices = [
             (None, "---------"),
         ]
-        _all_choices.extend(choice for choice in settings.LANGUAGES)
+        _all_choices.extend(
+            (locale.code, locale.name) for locale in Locale.objects.filter(is_active=True)
+        )
     return _all_choices
 
 
@@ -92,18 +95,14 @@ def _get_translate_language(lang=None):
     """Return the `supported language` code of a translate language code."""
     if lang is None:
         return _get_active_language()
-    else:
-        return _get_supported_language(lang)
+    return _get_supported_language(lang)
 
 
 def _get_probe_language(lang=None):
-    """
-    Return the `supported language` code(s) of some probe language code(s).
-    """
+    """Return the `supported language` code(s) of some probe language code(s)."""
     if isinstance(lang, (list, tuple)):
         return [_get_supported_language(x) for x in lang]
-    else:
-        return _get_translate_language(lang)
+    return _get_translate_language(lang)
 
 
 class _TRANSLATE:
@@ -138,8 +137,7 @@ class _PROBE:
         """Return the `default language` and `active language` codes."""
         if self.DEFAULT != self.ACTIVE:
             return [self.DEFAULT, self.ACTIVE]
-        else:
-            return self.DEFAULT
+        return self.DEFAULT
 
     @property
     def TRANSLATION(self):

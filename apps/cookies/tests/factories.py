@@ -1,10 +1,15 @@
+"""Factories for the cookies app."""
 import factory.fuzzy
 
-from apps.cookies.models import Cookie
+from ..models import Cookie
 
 
 class CookieFactory(factory.django.DjangoModelFactory):
+    """Cookie factory."""
+
     class Meta:
+        """Meta class for CookieFactory."""
+
         model = Cookie
 
     title = factory.fuzzy.FuzzyText(length=12)

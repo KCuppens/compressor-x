@@ -1,14 +1,14 @@
 """This module contains the utilities for the Translations app."""
 
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import FieldError
 from django.db import models
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models.query import prefetch_related_objects
 from django.utils.functional import SimpleLazyObject
 
 import apps.translations.models
+from apps.base.utils import check_tables
+from apps.locales.models import Locale
 
 
 __docformat__ = "restructuredtext"
@@ -44,35 +44,48 @@ def _get_dissected_lookup(model, lookup):
         "translatable": False,
     }
 
+    def __get_dissected_field(root, model):
+        """Return the dissected info of a field."""
+        if root == "pk":
+            return model._meta.pk
+        else:
+            return model._meta.get_field(root)
+
+    def ___handle_field_model(field_model, root):
+        """Handle field model and return dissected dict."""
+        if field_model:
+            dissected["relation"].append(root)
+        else:
+            dissected["field"] = root
+            if (
+                issubclass(model, apps.translations.models.Translatable)
+                and root in model._get_translatable_fields_names()
+            ):
+                dissected["translatable"] = True
+
+    def ___handle_nest(field_model, nest):
+        """Handle nest and return dissected dict."""
+        if field_model and nest:
+            _fill_dissected(field_model, *nest)
+        elif len(nest) == 1:
+            dissected["supplement"] = nest[0]
+        else:
+            return None
+
     def _fill_dissected(model, *relation_parts):
+        """Fill the dissected info of a lookup."""
         root = relation_parts[0]
         nest = relation_parts[1:]
-
         try:
-            if root == "pk":
-                field = model._meta.pk
-            else:
-                field = model._meta.get_field(root)
+            field = __get_dissected_field(root, model)
         except Exception as e:
             if not dissected["relation"] or nest or dissected["field"]:
                 raise e
             dissected["supplement"] = root
-        else:
-            field_model = field.related_model
-            if field_model:
-                dissected["relation"].append(root)
-                if nest:
-                    _fill_dissected(field_model, *nest)
-            else:
-                dissected["field"] = root
-                if issubclass(model, apps.translations.models.Translatable):
-                    if root in model._get_translatable_fields_names():
-                        dissected["translatable"] = True
-                if nest:
-                    if len(nest) == 1:
-                        dissected["supplement"] = nest[0]
-                    else:
-                        raise FieldError("Unsupported lookup '{}'".format(nest[0]))
+
+        field_model = field.related_model
+        ___handle_field_model(field_model, root)
+        ___handle_nest(field_model, nest)
 
     parts = lookup.split(LOOKUP_SEP)
 
@@ -86,6 +99,7 @@ def _get_relations_hierarchy(*relations):
     hierarchy = {}
 
     def _fill_hierarchy(hierarchy, *relation_parts):
+        """Fill the relations hierarchy of some relations."""
         root = relation_parts[0]
         nest = relation_parts[1:]
 
@@ -111,7 +125,6 @@ def _get_relations_hierarchy(*relations):
 
 def _get_entity_details(entity):
     """Return the iteration and type details of an entity."""
-
     error_message = SimpleLazyObject(
         lambda: "`{}` is neither {} nor {}.".format(
             entity,
@@ -144,26 +157,35 @@ def _get_purview(entity, hierarchy):
     query = models.Q()
 
     def _fill_entity(entity, hierarchy, included=True):
+        """Fill the purview of an entity and a relations hierarchy of it."""
         iterable, model = _get_entity_details(entity)
-
-        if model is None:
+        if not model:
             return
 
         content_type_id = ContentType.objects.get_for_model(model).id
+        instances = mapping.setdefault(content_type_id, {})
 
-        if included:
-            instances = mapping.setdefault(content_type_id, {})
-            if not issubclass(model, apps.translations.models.Translatable):
-                raise TypeError("`{}` is not Translatable!".format(model))
+        if included and not issubclass(model, apps.translations.models.Translatable):
+            raise TypeError("`{}` is not Translatable!".format(model))
 
-        def _fill_obj(obj):
+        def ___fill_default_translatable_fields(obj):
+            """Fill the default translatable fields of an object."""
+            if not hasattr(obj, "_default_translatable_fields"):
+                obj._default_translatable_fields = {
+                    field: getattr(obj, field)
+                    for field in type(obj)._get_translatable_fields_names()
+                }
+            return obj
+
+        def __fill_query(obj):
+            """Fill the query of an object."""
             if included:
                 if not hasattr(obj, "_default_translatable_fields"):
                     obj._default_translatable_fields = {
                         field: getattr(obj, field)
                         for field in type(obj)._get_translatable_fields_names()
                     }
-                object_id = str(obj.pk)
+                object_id = obj.pk
                 instances[object_id] = obj
                 nonlocal query
                 query |= models.Q(
@@ -171,18 +193,25 @@ def _get_purview(entity, hierarchy):
                     object_id=object_id,
                 )
 
+        def __handle_model_manager(relation, value):
+            """Handle model manager and return the value."""
+            if isinstance(value, models.Manager):
+                if not (
+                    hasattr(obj, "_prefetched_objects_cache")
+                    and relation in obj._prefetched_objects_cache
+                ):
+                    prefetch_related_objects([obj], relation)
+                return value.all()
+            return value
+
+        def _fill_obj(obj):
+            __fill_query(obj)
+
             if hierarchy:
                 for relation, detail in hierarchy.items():
                     value = getattr(obj, relation, None)
-
-                    if value is not None:
-                        if isinstance(value, models.Manager):
-                            if not (
-                                hasattr(obj, "_prefetched_objects_cache")
-                                and relation in obj._prefetched_objects_cache
-                            ):
-                                prefetch_related_objects([obj], relation)
-                            value = value.all()
+                    if value:
+                        value = __handle_model_manager(relation, value)
                         _fill_entity(
                             entity=value,
                             hierarchy=detail["relations"],
@@ -219,15 +248,35 @@ def _get_translations(query, lang):
 
 
 def validate_language(lng):
+    """Validate a language code."""
     if lng and not check_if_language_exists(lng):
         return False
     return True
 
 
 def check_if_language_exists(lng):
+    """Check if a language code exists."""
     exists = False
-    for code, _ in settings.LANGUAGES:
-        if code == lng:
+    for lang in Locale.objects.filter(is_active=True):
+        if lang.code == lng:
             exists = True
             break
     return exists
+
+
+def get_languages():
+    if not check_tables("locale_locale"):
+        return (("en", "English"),)
+    languages = []
+    for lang in Locale.objects.filter(is_active=True):
+        languages.append((lang.code, lang.name))
+    return languages
+
+
+def get_active_languages():
+    if not check_tables("locale_locale"):
+        return (("en", "English"),)
+    languages = []
+    for lang in Locale.objects.filter(is_active=True):
+        languages.append(lang.code)
+    return languages

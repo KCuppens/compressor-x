@@ -1,5 +1,6 @@
 from itertools import chain
 
+from django.db import connection
 from django.utils.safestring import mark_safe
 
 from asgiref.sync import async_to_sync
@@ -105,3 +106,10 @@ def upload_file_to_media(path, file):
         media_storage.save(path, file)
         return True
     return False
+
+
+def check_tables(table_name):
+    with connection.cursor() as cursor:
+        stmt = "SHOW TABLES LIKE '%s' " % ("%" + str(table_name) + "%")
+        cursor.execute(stmt)
+        return cursor.fetchone()
