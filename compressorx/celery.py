@@ -36,21 +36,21 @@ app.autodiscover_tasks()
 app.conf.task_default_queue = "default"
 app.conf.task_queues = (
     Queue(
-        settings.APP_CONFIG + "default",
+        "default",
         Exchange("normal"),
-        routing_key=settings.APP_CONFIG + "default",
+        routing_key="default",
         queue_arguments={"x-max-priority": 7},
     ),
     Queue(
-        settings.APP_CONFIG + "mailing",
+        "mailing",
         Exchange("high"),
-        routing_key=settings.APP_CONFIG + "mailing",
+        routing_key="mailing",
         queue_arguments={"x-max-priority": 10},
     ),
 )
 CELERY_DEFAULT_QUEUE = "normal"
 CELERY_DEFAULT_EXCHANGE = "normal"
-CELERY_DEFAULT_ROUTING_KEY = settings.APP_CONFIG + "default"
+CELERY_DEFAULT_ROUTING_KEY = "default"
 
 
 class CeleryOnceFakeBackend:
