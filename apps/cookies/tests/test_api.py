@@ -93,3 +93,21 @@ class CookieTestcase(CustomGraphQLTestCase):
             response.json()["data"]["getCookie"]["externalContentCookiesDescription"],
             self.cookie.external_content_cookies_description,
         )
+
+    def test_get_cookie_empty(self):
+        """Test get cookie."""
+        self.cookie.delete()
+        response = self.query(
+            """
+            query getCookie{
+                getCookie{
+                    title,
+                    message,
+                    essentialFunctionalCookiesDescription,
+                    analyticalCookiesDescription,
+                    externalContentCookiesDescription
+                }
+            }
+            """
+        )
+        self.assertEqual(response.json()["data"]["getCookie"], None)

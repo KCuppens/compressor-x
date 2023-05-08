@@ -44,6 +44,8 @@ class Query(graphene.ObjectType):
 
     def resolve_get_blog_detail(self, info, slug, lng: str = None):
         blogs = Blog.objects.all()
+        if not blogs.exists():
+            return None
         if lng:
             blogs = blogs.distinct().probe(lng)
         blogs = blogs.filter(slug=slug, state=STATE_PUBLISHED)

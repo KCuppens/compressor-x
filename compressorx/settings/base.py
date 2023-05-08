@@ -110,6 +110,7 @@ THIRD_PARTY_APPS = [
     "health_check.db",  # stock Django health checkers
     "health_check.cache",
     "health_check.storage",
+    "health_check.contrib.celery",  # requires celery
     "import_export",  # Import and export data with included admin integration (Excel, CSV, JSON)
     "graphene_django",
     "martor",

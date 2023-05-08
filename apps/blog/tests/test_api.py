@@ -97,7 +97,6 @@ class BlogTestCase(JSONWebTokenTestCase):
             """
         variables = {"slug": self.blog.slug}
         response = self.client.execute(query, variables)
-        print(response)
         self.assertEqual(response.data["getBlogDetail"]["name"], self.blog.name)
         self.assertEqual(response.data["getBlogDetail"]["description"], self.blog.description)
         self.assertEqual(response.data["getBlogDetail"]["keywords"], self.blog.keywords)
@@ -120,3 +119,20 @@ class BlogTestCase(JSONWebTokenTestCase):
         self.assertEqual(response.data["getBlogDetail"]["name"], "name")
         self.assertEqual(response.data["getBlogDetail"]["description"], self.blog.description)
         self.assertEqual(response.data["getBlogDetail"]["keywords"], self.blog.keywords)
+
+    def test_get_filter_blogs_empty(self):
+        """Test get filter blogs."""
+        self.blog.delete()
+        query = """
+            query getFilterBlogs($name: String!) {
+                getFilterBlogs(name: $name){
+                    name,
+                    id,
+                    description,
+                    keywords
+                }
+            }
+            """
+        variables = {"name": "all"}
+        response = self.client.execute(query, variables)
+        self.assertEqual(response.data["getFilterBlogs"], None)

@@ -1,17 +1,17 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 23.3.0
     hooks:
       - id: black
         # It is recommended to specify the latest version of Python
         # supported by your project here, or alternatively use
         # pre-commit's default_language_version, see
         # https://pre-commit.com/#top_level-default_language_version
-        language_version: python3.9
+        language_version: python3.11
         args: [--line-length=99]
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.3.1
+    rev: v1.5.1
     hooks:
       - id: remove-crlf
 
@@ -44,7 +44,7 @@ repos:
         args: ["--autofix"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.0.1
+    rev: v1.2.0
     # rev: 'dc6912646c561f16af711006e7615d52e9bf0968'  # Use the sha / tag you want to point at
     hooks:
       - id: mypy
@@ -88,7 +88,7 @@ repos:
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     # Ruff version.
-    rev: 'v0.0.255'
+    rev: 'v0.0.265'
     hooks:
       - id: ruff
         args: [--line-length=99]
