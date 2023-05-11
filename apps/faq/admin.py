@@ -46,13 +46,12 @@ class TopicAdmin(SortableAdminMixin, TranslatableAdmin, admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """Save the model and auto translate."""
-        obj.user = request.user
         transaction.on_commit(lambda: translate_object.delay("faq.Topic", obj.id))
+        super().save_model(request, obj, form, change)
         for question in obj.questions.all():
             transaction.on_commit(
                 lambda: translate_object.delay("faq.Question", question.id)  # noqa B023
             )
-        super().save_model(request, obj, form, change)
 
 
 admin.site.register(Topic, TopicAdmin)

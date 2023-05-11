@@ -34,11 +34,11 @@ class PageAdmin(TranslatableAdmin, admin.ModelAdmin):
         """Save the model and auto translate."""
         obj.user = request.user
         transaction.on_commit(lambda: translate_object.delay("pages.Page", obj.id))
+        super().save_model(request, obj, form, change)
         for question in obj.elements.all():
             transaction.on_commit(
                 lambda: translate_object.delay("pages.PageElement", question.id)  # noqa B023
             )
-        super().save_model(request, obj, form, change)
 
 
 class PageTextAdmin(TranslatableAdmin, admin.ModelAdmin):
