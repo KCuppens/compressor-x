@@ -12,8 +12,20 @@ from ..models import Question, Topic
 logger = logging.getLogger(__name__)
 
 
+class QuestionType(DjangoObjectType):
+    """Question type."""
+
+    class Meta:
+        """Meta class for QuestionType."""
+
+        model = Question
+        fields = "__all__"
+
+
 class TopicType(DjangoObjectType):
     """Topic type."""
+
+    questions = graphene.List(QuestionType)
 
     class Meta:
         """Meta class for TopicType."""
@@ -25,15 +37,9 @@ class TopicType(DjangoObjectType):
         """Get image url."""
         return self.image.url or ""
 
-
-class QuestionType(DjangoObjectType):
-    """Question type."""
-
-    class Meta:
-        """Meta class for QuestionType."""
-
-        model = Question
-        fields = "__all__"
+    def resolve_questions(self, info):
+        """Get questions."""
+        return self.questions.all().order_by("-position")
 
 
 class Query(graphene.ObjectType):

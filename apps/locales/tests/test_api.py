@@ -17,7 +17,6 @@ class LocaleTestCase(JSONWebTokenTestCase):
             }
             """
         response = self.client.execute(query)
-        print(response)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data["getLocales"][0]["name"], self.locale.name)
         self.assertEqual(response.data["getLocales"][0]["code"], self.locale.code)

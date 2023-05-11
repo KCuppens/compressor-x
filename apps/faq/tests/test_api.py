@@ -40,12 +40,15 @@ class FaqTestCase(JSONWebTokenTestCase):
             query getTopics{
                 getTopics{
                     id,
-                    image
+                    image,
+                    questions{
+                        question,
+                        answer
+                    }
                 }
             }
             """
         response = self.client.execute(query)
-        print(response)
         self.assertEqual(response.data["getTopics"][0]["id"], str(self.topic.id))
         self.assertEqual(response.data["getTopics"][0]["image"], str(self.topic.image.url))
         self.topic.image.delete()
@@ -60,7 +63,6 @@ class FaqTestCase(JSONWebTokenTestCase):
             }
             """
         response = self.client.execute(query)
-        print(response)
         self.assertEqual(response.data["getQuestions"][0]["id"], str(self.question.id))
 
     def test_get_questions_by_topic(self):

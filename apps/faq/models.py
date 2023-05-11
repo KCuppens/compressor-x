@@ -50,7 +50,7 @@ class Question(BaseModel, StateModel, SeoModel, Translatable, SortableModel):
 
     question = models.CharField(max_length=255, verbose_name=_("Question"))
     answer = models.TextField(blank=True, verbose_name=_("Answer"))
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="questions")
 
     def __str__(self):
         """Return the question of the question."""
