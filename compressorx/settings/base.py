@@ -113,6 +113,7 @@ THIRD_PARTY_APPS = [
     "health_check.contrib.celery",  # requires celery
     "import_export",  # Import and export data with included admin integration (Excel, CSV, JSON)
     "graphene_django",
+    "adminsortable2",
     "martor",
     "mptt",
     "storages",
