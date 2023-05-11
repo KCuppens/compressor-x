@@ -48,7 +48,7 @@ class TopicAdmin(SortableAdminMixin, TranslatableAdmin, admin.ModelAdmin):
         """Save the model and auto translate."""
         obj.user = request.user
         transaction.on_commit(lambda: translate_object.delay("faq.Topic", obj.id))
-        for question in obj.question_set.all():
+        for question in obj.questions.all():
             transaction.on_commit(
                 lambda: translate_object.delay("faq.Question", question.id)  # noqa B023
             )
