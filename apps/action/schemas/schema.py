@@ -1,12 +1,20 @@
 import graphene
 from graphene_django import DjangoObjectType
 
+from apps.compression.models import Compression
+
 from ..models import Action
 
 
 class ActionType(DjangoObjectType):
     class Meta:
         model = Action
+        fields = "__all__"
+
+
+class CompressionType(DjangoObjectType):
+    class Meta:
+        model = Compression
         fields = "__all__"
 
 
