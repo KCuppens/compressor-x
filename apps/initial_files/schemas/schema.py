@@ -15,6 +15,11 @@ class InitialFileType(DjangoObjectType):
         model = InitialFile
 
 
+class CompressedFileType(DjangoObjectType):
+    class Meta:
+        model = InitialFile
+
+
 class Query(graphene.ObjectType):
     get_initial_file = graphene.Field(InitialFileType, id=graphene.String(required=True))
 
