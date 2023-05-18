@@ -1,11 +1,11 @@
 import graphene
-from compressed_file.models import CompressedFile
 from graphene_django import DjangoObjectType
 from graphene_file_upload.scalars import Upload
 
 from apps.action.models import Action
 from apps.action.schemas.schema import ActionType
 from apps.compress.services.CompressEngine import CompressEngine
+from apps.compressed_file.models import CompressedFile
 
 from ..models import InitialFile
 from ..utils import uploading_initial_file
