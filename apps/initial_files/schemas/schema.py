@@ -1,4 +1,5 @@
 import graphene
+from compressed_file.models import CompressedFile
 from graphene_django import DjangoObjectType
 from graphene_file_upload.scalars import Upload
 
@@ -17,7 +18,7 @@ class InitialFileType(DjangoObjectType):
 
 class CompressedFileType(DjangoObjectType):
     class Meta:
-        model = InitialFile
+        model = CompressedFile
 
 
 class Query(graphene.ObjectType):
