@@ -267,9 +267,9 @@ def check_if_language_exists(lng):
 def get_languages():
     if not check_tables("locales_locale"):
         return (("en", "English"),)
-    languages = ()
+    languages = []
     for lang in Locale.objects.filter(is_active=True):
-        languages += (lang.code, lang.name)
+        languages.append((lang.code, lang.name))
     return languages
 
 
