@@ -138,7 +138,6 @@ class CookieTestcase(CustomGraphQLTestCase):
             }
             """
         )
-        print(response.json())
         self.assertEqual(response.json()["data"]["getAdblock"]["title"], self.adblock.title)
         self.assertEqual(response.json()["data"]["getAdblock"]["message"], self.adblock.message)
         self.assertEqual(
@@ -159,7 +158,6 @@ class CookieTestcase(CustomGraphQLTestCase):
             """,
             variables={"lng": self.locale.code},
         )
-        print(response.json())
         self.assertEqual(response.json()["data"]["getAdblock"]["title"], "title")
         self.assertEqual(response.json()["data"]["getAdblock"]["message"], self.adblock.message)
         self.assertEqual(
