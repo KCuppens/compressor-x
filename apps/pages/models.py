@@ -2,18 +2,15 @@ from django.db import models
 
 from django_extensions.db.fields import AutoSlugField
 
-from apps.base.models import BaseModel
+from apps.base.models import BaseModel, SeoModel
 from apps.translations.models import Translatable
 
 
-class Page(BaseModel, Translatable):
+class Page(BaseModel, SeoModel, Translatable):
     key_name = models.CharField(max_length=255, blank=True, null=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
-    meta_title = models.CharField(max_length=255, blank=True, null=True)
-    meta_description = models.CharField(max_length=255, blank=True, null=True)
-    meta_keywords = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         verbose_name = "Page"
