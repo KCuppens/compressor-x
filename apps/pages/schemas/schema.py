@@ -65,6 +65,11 @@ class Query(graphene.ObjectType):
         key_name=graphene.String(),
         lng=graphene.String(),
     )
+    get_page_texts_by_key_names = graphene.List(
+        PageTextType,
+        key_names=graphene.List(graphene.String),
+        lng=graphene.String(),
+    )
 
     def resolve_get_page_by_key_name(self, info, key_name, lng: str = None):
         """Get Page."""
@@ -81,3 +86,11 @@ class Query(graphene.ObjectType):
             pages = pages.translate(lng)
             logger.info(f"Get page text by key_name: {models_to_dict(pages)}")
         return pages.first()
+
+    def resolve_get_page_texts_by_key_names(self, info, key_names: list, lng: str = None):
+        """Get PageTexts."""
+        pages = PageText.objects.filter(key_name__in=key_names)
+        if lng:
+            pages = pages.translate(lng)
+            logger.info(f"Get page texts by key_names: {models_to_dict(pages)}")
+        return pages
