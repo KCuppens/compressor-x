@@ -15,7 +15,15 @@ class PageElementAdminInline(admin.TabularInline):
 
     model = PageElement
     extra = 1
-    fields = ("title", "subtitle", "content", "image", "button_text", "button_url")
+    fields = (
+        "key_name",
+        "title",
+        "subtitle",
+        "content",
+        "image",
+        "button_text",
+        "button_url",
+    )
     formfield_overrides = {
         models.TextField: {"widget": AdminMartorWidget},
     }

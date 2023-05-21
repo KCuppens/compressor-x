@@ -28,6 +28,7 @@ class Page(BaseModel, SeoModel, Translatable):
 
 
 class PageElement(BaseModel, Translatable):
+    key_name = models.CharField(max_length=255, blank=True, null=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     slug = AutoSlugField(populate_from="title", unique=True)
