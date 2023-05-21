@@ -9,8 +9,8 @@ from apps.base.utils import CustomGraphQLTestCase
 from apps.locales.tests.factories import LocaleFactory
 from apps.translations.models import Translation
 
-from ..models import Cookie
-from .factories import CookieFactory
+from ..models import AdBlock, Cookie
+from .factories import AdBlockFactory, CookieFactory
 
 
 class CookieTestcase(CustomGraphQLTestCase):
@@ -28,11 +28,24 @@ class CookieTestcase(CustomGraphQLTestCase):
         )
         return cookie
 
+    @pytest.mark.django_db(transaction=True, reset_sequences=True)
+    def create_adblock(self):
+        adblock = AdBlockFactory(state=STATE_PUBLISHED)
+        Translation.objects.create(
+            content_type=ContentType.objects.get_for_model(AdBlock),
+            object_id=adblock.id,
+            language="nl",
+            field="title",
+            text="title",
+        )
+        return adblock
+
     @mock.patch("apps.locales.models.translate_all_objects.delay")
     def setUp(self, _):
         LocaleFactory(is_default=True, code="en")
         self.locale = LocaleFactory(is_active=True, code="nl")
         self.cookie = self.create_cookie()
+        self.adblock = self.create_adblock()
 
     def test_get_cookie(self):
         """Test get cookie."""
@@ -111,3 +124,45 @@ class CookieTestcase(CustomGraphQLTestCase):
             """
         )
         self.assertEqual(response.json()["data"]["getCookie"], None)
+
+    def test_get_ad_block(self):
+        """Test get ad block."""
+        response = self.query(
+            """
+            query getAdblock{
+                getAdblock{
+                    title,
+                    message,
+                    buttonText,
+                }
+            }
+            """
+        )
+        print(response.json())
+        self.assertEqual(response.json()["data"]["getAdblock"]["title"], self.adblock.title)
+        self.assertEqual(response.json()["data"]["getAdblock"]["message"], self.adblock.message)
+        self.assertEqual(
+            response.json()["data"]["getAdblock"]["buttonText"],
+            self.adblock.button_text,
+        )
+
+    def test_get_adblock_locale(self):
+        response = self.query(
+            """
+            query getAdblock($lng: String!){
+                getAdblock(lng: $lng){
+                    title,
+                    message,
+                    buttonText,
+                }
+            }
+            """,
+            variables={"lng": self.locale.code},
+        )
+        print(response.json())
+        self.assertEqual(response.json()["data"]["getAdblock"]["title"], "title")
+        self.assertEqual(response.json()["data"]["getAdblock"]["message"], self.adblock.message)
+        self.assertEqual(
+            response.json()["data"]["getAdblock"]["buttonText"],
+            self.adblock.button_text,
+        )
